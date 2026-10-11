@@ -65,7 +65,7 @@ const DEMO_ACCOUNTS = {
   admin: 'admin@demo.example.com',
 } as const;
 
-/** "Try as student / tutor / admin": shared public demo accounts (the admin one is read-only) */
+/** "Try as student / tutor / admin": shared public demo accounts (test mode only) */
 export async function signInAsDemo(role: keyof typeof DEMO_ACCOUNTS, next?: string): Promise<AuthState> {
   const password = env().DEMO_PASSWORD;
   if (!password) return { error: 'Demo accounts are not configured' };

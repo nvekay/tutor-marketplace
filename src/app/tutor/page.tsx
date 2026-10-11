@@ -8,6 +8,7 @@ import { listMyBookings } from '@/lib/bookings/queries';
 import { env } from '@/lib/env';
 import { paymentsConfigured } from '@/lib/payments/stripe';
 import { getMyTutorProfile, onboardingSteps, type MyTutorProfile } from '@/lib/tutor-account';
+import { formatUsd } from '@/lib/tutors';
 import { openStripeDashboard, refreshPayoutStatus, startPayoutOnboarding } from './actions';
 
 export const metadata: Metadata = { title: 'Tutor dashboard · Tutor Market' };
@@ -88,6 +89,8 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
           ))}
         </ol>
       </section>
+
+      <Earnings items={[...bookings.upcoming, ...bookings.past]} />
 
       <section aria-labelledby="lessons-title">
         <h2 id="lessons-title" className="mb-3 font-medium">
@@ -202,3 +205,29 @@ const requirementLabel = (r: string) =>
     .replace(/[._]/g, ' ')
     .replace(/\s+/g, ' ')
     .replace(/^\w/, (c) => c.toUpperCase());
+
+function Earnings({ items }: { items: Awaited<ReturnType<typeof listMyBookings>>['upcoming'] }) {
+  const sum = (filter: (b: (typeof items)[number]) => boolean) =>
+    items.filter(filter).reduce((total, b) => total + b.tutorCents, 0);
+  const cards = [
+    {
+      label: 'Booked lessons',
+      value: sum((b) => b.payoutStatus === 'none' && b.status === 'confirmed'),
+      hint: 'paid after each lesson',
+    },
+    { label: 'Scheduled', value: sum((b) => b.payoutStatus === 'scheduled'), hint: 'after the 24-hour window' },
+    { label: 'On hold', value: sum((b) => b.payoutStatus === 'held'), hint: 'complaint or chargeback' },
+    { label: 'Paid out', value: sum((b) => b.payoutStatus === 'paid'), hint: 'to your Stripe balance' },
+  ];
+  return (
+    <section aria-label="Earnings" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {cards.map((c) => (
+        <div key={c.label} className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+          <p className="text-xs text-slate-500">{c.label}</p>
+          <p className="mt-1 text-xl font-semibold tabular-nums">{formatUsd(c.value)}</p>
+          <p className="text-xs text-slate-500">{c.hint}</p>
+        </div>
+      ))}
+    </section>
+  );
+}

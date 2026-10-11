@@ -226,7 +226,30 @@ export async function leaveReview(input: { bookingId: string; studentId: string;
 
 // ─── scheduled jobs ──────────────────────────────────────────────────────────
 
-/** Lessons whose time has passed become completed; the payout is scheduled after the complaint window */
+/** Marks one lesson completed and schedules the tutor's payout after the complaint window */
+export async function completeLesson(
+  booking: Booking,
+  actor: { role: 'system' | 'admin'; id?: string } = { role: 'system' },
+) {
+  const completed = await transition(booking, 'completed', {
+    payout_status: 'scheduled',
+    payout_cents: booking.price_cents - booking.platform_fee_cents,
+    payout_due_at: payoutDueAt(new Date(booking.ends_at)).toISOString(),
+  });
+  if (!completed) return null;
+  await logBookingEvent(booking.id, 'completed', actor);
+  const lesson = await lessonSummary(booking);
+  await notify(
+    booking.student_id,
+    booking.id,
+    'lesson_completed',
+    `How was your lesson with ${lesson.tutorName}?`,
+    'Leave a review, or report a problem within 24 hours.',
+  );
+  return completed;
+}
+
+/** Lessons whose time has passed become completed */
 export async function completeFinishedLessons(now = new Date()): Promise<number> {
   const { data, error } = await db()
     .from('bookings')
@@ -236,78 +259,70 @@ export async function completeFinishedLessons(now = new Date()): Promise<number>
     .limit(200);
   if (error) throw error;
   let count = 0;
-  for (const booking of data) {
-    const completed = await transition(booking, 'completed', {
-      payout_status: 'scheduled',
-      payout_cents: booking.price_cents - booking.platform_fee_cents,
-      payout_due_at: payoutDueAt(new Date(booking.ends_at)).toISOString(),
-    });
-    if (!completed) continue;
-    count++;
-    await logBookingEvent(booking.id, 'completed', { role: 'system' });
-    const lesson = await lessonSummary(booking);
-    await notify(
-      booking.student_id,
-      booking.id,
-      'lesson_completed',
-      `How was your lesson with ${lesson.tutorName}?`,
-      'Leave a review, or report a problem within 24 hours.',
-    );
-  }
+  for (const booking of data) if (await completeLesson(booking)) count++;
   return count;
+}
+
+/** Transfers the tutor's share of one lesson whose payout is scheduled; returns false if it was already paid */
+export async function payOut(booking: Booking): Promise<boolean> {
+  const { data: tutor } = await db()
+    .from('tutors')
+    .select('stripe_account_id')
+    .eq('profile_id', booking.tutor_id)
+    .single();
+  const destination = tutor?.stripe_account_id;
+  if (!destination || !booking.charge_id || !booking.payout_cents) throw new Error('Missing account, charge or amount');
+  const transfer = await stripe().transfers.create(
+    {
+      amount: booking.payout_cents,
+      currency: booking.currency,
+      destination,
+      // Ties the transfer to the student's payment: it can't outrun the funds it comes from
+      source_transaction: booking.charge_id,
+      transfer_group: `booking_${booking.id}`,
+      description: `Lesson ${booking.id}`,
+      metadata: { booking_id: booking.id },
+    },
+    // A new payout_due_at (e.g. after a won chargeback) means a new transfer
+    { idempotencyKey: `booking:${booking.id}:transfer:${booking.payout_due_at}` },
+  );
+  const { data: updated } = await db()
+    .from('bookings')
+    .update({ payout_status: 'paid', transfer_id: transfer.id })
+    .eq('id', booking.id)
+    .eq('payout_status', 'scheduled')
+    .select('id');
+  if (!updated?.length) return false;
+  await logBookingEvent(
+    booking.id,
+    'paid_out',
+    { role: 'system' },
+    { transfer: transfer.id, amount: booking.payout_cents },
+  );
+  await notify(
+    booking.tutor_id,
+    booking.id,
+    'payout',
+    `You were paid $${(booking.payout_cents / 100).toFixed(2)}`,
+    'Sent to your Stripe balance.',
+  );
+  return true;
 }
 
 /** Transfers the tutor's share for every payout that is due */
 export async function payDueTutors(now = new Date()): Promise<{ paid: number; failed: number }> {
   const { data, error } = await db()
     .from('bookings')
-    .select('*, tutors(stripe_account_id)')
+    .select('*')
     .eq('payout_status', 'scheduled')
     .lte('payout_due_at', now.toISOString())
     .limit(100);
   if (error) throw error;
   let paid = 0;
   let failed = 0;
-  for (const { tutors, ...booking } of data) {
+  for (const booking of data) {
     try {
-      const destination = tutors?.stripe_account_id;
-      if (!destination || !booking.charge_id || !booking.payout_cents)
-        throw new Error('Missing account, charge or amount');
-      const transfer = await stripe().transfers.create(
-        {
-          amount: booking.payout_cents,
-          currency: booking.currency,
-          destination,
-          // Ties the transfer to the student's payment: it can't outrun the funds it comes from
-          source_transaction: booking.charge_id,
-          transfer_group: `booking_${booking.id}`,
-          description: `Lesson ${booking.id}`,
-          metadata: { booking_id: booking.id },
-        },
-        // A new payout_due_at (e.g. after a won chargeback) means a new transfer
-        { idempotencyKey: `booking:${booking.id}:transfer:${booking.payout_due_at}` },
-      );
-      const { data: updated } = await db()
-        .from('bookings')
-        .update({ payout_status: 'paid', transfer_id: transfer.id })
-        .eq('id', booking.id)
-        .eq('payout_status', 'scheduled')
-        .select('id');
-      if (!updated?.length) continue;
-      paid++;
-      await logBookingEvent(
-        booking.id,
-        'paid_out',
-        { role: 'system' },
-        { transfer: transfer.id, amount: booking.payout_cents },
-      );
-      await notify(
-        booking.tutor_id,
-        booking.id,
-        'payout',
-        `You were paid $${(booking.payout_cents / 100).toFixed(2)}`,
-        'Sent to your Stripe balance.',
-      );
+      if (await payOut(booking)) paid++;
     } catch (e) {
       failed++;
       console.error('payout failed', booking.id, e);
@@ -320,6 +335,37 @@ export async function payDueTutors(now = new Date()): Promise<{ paid: number; fa
     }
   }
   return { paid, failed };
+}
+
+/**
+ * Demo shortcut for admins: moves one lesson forward in time (lesson over → complaint window closed → paid)
+ * without waiting. Only where time travel is allowed (test mode).
+ */
+export async function fastForwardBooking(bookingId: string, adminId: string): Promise<string> {
+  let booking = await loadBooking(bookingId);
+  if (!booking) throw new BookingError('Lesson not found');
+  if (booking.status === 'confirmed') {
+    const completed = await completeLesson(booking, { role: 'admin', id: adminId });
+    if (!completed) throw new BookingError('This lesson has just changed. Reload the page.');
+    return 'Lesson marked as taken place. The tutor’s payout is scheduled after the 24-hour complaint window.';
+  }
+  if (booking.payout_status === 'scheduled') {
+    const now = new Date().toISOString();
+    // Pull the due date to now (only future dates: a due payout may be in the job's hands already)
+    if (booking.payout_due_at && booking.payout_due_at > now) {
+      const { data } = await db()
+        .from('bookings')
+        .update({ payout_due_at: now })
+        .eq('id', booking.id)
+        .eq('payout_status', 'scheduled')
+        .select('*')
+        .single();
+      if (data) booking = data;
+    }
+    await logBookingEvent(booking.id, 'complaint_window_skipped', { role: 'admin', id: adminId });
+    return (await payOut(booking)) ? 'Tutor paid' : 'Already paid';
+  }
+  throw new BookingError('Nothing to move forward for this lesson');
 }
 
 /** One reminder to both sides about 24 hours before the lesson */

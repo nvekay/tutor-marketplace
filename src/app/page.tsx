@@ -5,7 +5,7 @@ const MONEY_FLOW = [
   {
     icon: CalendarCheck,
     title: 'Book a slot',
-    text: 'Pick a time in your own time zone. The slot is held for 15 minutes while you pay.',
+    text: 'Pick a time in your own time zone. The slot is held for 30 minutes while you pay.',
   },
   {
     icon: CreditCard,
@@ -22,6 +22,42 @@ const MONEY_FLOW = [
     title: 'Tutor gets paid',
     text: 'A Stripe Connect transfer sends the price minus the platform fee to the tutor.',
   },
+];
+
+const TRY = [
+  {
+    role: 'Student',
+    steps: [
+      'Pick a tutor and a time, pay with the test card',
+      'Cancel more than 24 h ahead: full refund; later: 50%',
+      'After a lesson: leave a review or report a problem',
+    ],
+  },
+  {
+    role: 'Tutor',
+    steps: [
+      'Set your weekly hours and days off',
+      'See booked lessons and what you earn on each',
+      'Sign up as a new tutor to go through Stripe onboarding',
+    ],
+  },
+  {
+    role: 'Admin',
+    steps: [
+      'Follow every booking’s money in a timeline linked to Stripe',
+      'Resolve a complaint with a full, partial or no refund',
+      'Skip ahead in time to see the tutor paid out',
+    ],
+  },
+];
+
+const HIGHLIGHTS = [
+  'Double bookings are impossible: a Postgres exclusion constraint rejects overlapping lessons, even under races.',
+  'Every Stripe call that moves money has an idempotency key; webhooks are stored by event id and handled once.',
+  'Transfers to tutors are tied to the student’s charge, so a payout can never exceed what was collected.',
+  'Chargebacks hold the payout, or reverse the transfer if the tutor was already paid.',
+  'Slot times are computed in each person’s time zone and tested across daylight saving changes.',
+  'Row level security: users only ever read their own lessons; money moves only on the server.',
 ];
 
 const STACK = ['Next.js', 'TypeScript', 'Supabase (Postgres, Auth, RLS)', 'Stripe Connect', 'Tailwind CSS'];
@@ -78,6 +114,34 @@ export default function HomePage() {
             ))}
           </ol>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <h2 className="text-xl font-semibold">Try it</h2>
+        <div className="mt-6 grid gap-3 md:grid-cols-3">
+          {TRY.map((t) => (
+            <div key={t.role} className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+              <p className="font-medium">As a {t.role.toLowerCase()}</p>
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-400">
+                {t.steps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <h2 className="text-xl font-semibold">Under the hood</h2>
+        <ul className="mt-4 grid gap-x-8 gap-y-2 text-sm text-slate-600 md:grid-cols-2 dark:text-slate-400">
+          {HIGHLIGHTS.map((h) => (
+            <li key={h} className="flex gap-2">
+              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
+              {h}
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12">

@@ -41,7 +41,7 @@ export function SignInForm({ next }: { next?: string }) {
 const DEMO_ROLES = [
   { role: 'student', label: 'Student', hint: 'Find a tutor and book a lesson', icon: BookOpen },
   { role: 'tutor', label: 'Tutor', hint: 'Schedule, bookings and earnings', icon: GraduationCap },
-  { role: 'admin', label: 'Admin', hint: 'Read-only: payments and disputes', icon: ShieldCheck },
+  { role: 'admin', label: 'Admin', hint: 'Payments, payouts and disputes', icon: ShieldCheck },
 ] as const;
 
 /** One click into a shared demo account, so visitors can try every side of the marketplace */

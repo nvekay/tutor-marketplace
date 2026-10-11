@@ -125,28 +125,33 @@ export async function createBooking(input: {
 
   const price = lessonPriceCents(tutor.hourly_rate_cents, tutor.lesson_minutes);
   const holdUntil = new Date(now.getTime() + HOLD_MINUTES * 60_000);
-  const { data: booking, error } = await db()
-    .from('bookings')
-    .insert({
-      student_id: student.id,
-      tutor_id: tutorId,
-      starts_at: startsAt.toISOString(),
-      ends_at: endsAt.toISOString(),
-      price_cents: price,
-      platform_fee_cents: platformFeeCents(price, env().PLATFORM_FEE_BPS),
-      hold_expires_at: holdUntil.toISOString(),
-    })
-    .select()
-    .single();
-  if (error) {
+  const insertHold = () =>
+    db()
+      .from('bookings')
+      .insert({
+        student_id: student.id,
+        tutor_id: tutorId,
+        starts_at: startsAt.toISOString(),
+        ends_at: endsAt.toISOString(),
+        price_cents: price,
+        platform_fee_cents: platformFeeCents(price, env().PLATFORM_FEE_BPS),
+        hold_expires_at: holdUntil.toISOString(),
+      })
+      .select()
+      .single();
+  let { data: booking, error } = await insertHold();
+  // Two simultaneous inserts for one slot can deadlock on the exclusion constraints; Postgres aborts one
+  // of them (40P01). Retrying once gives a clear answer: the slot is ours, or 23P01 below.
+  if (error?.code === '40P01') ({ data: booking, error } = await insertHold());
+  if (error || !booking) {
     // The exclusion constraints: someone else got this slot first, or the student already has a lesson then
-    if (error.code === '23P01')
+    if (error?.code === '23P01')
       throw new BookingError(
         error.message.includes('no_student_overlap')
           ? 'You already have a lesson at this time'
           : 'Someone just booked this time. Pick another one.',
       );
-    throw error;
+    throw error ?? new Error('Booking was not created');
   }
   await logBookingEvent(booking.id, 'created', { role: 'student', id: student.id }, { price_cents: price });
 

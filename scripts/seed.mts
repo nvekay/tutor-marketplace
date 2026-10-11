@@ -6,7 +6,9 @@ import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
 import { existsSync } from 'node:fs';
 
-if (existsSync('.env.local')) process.loadEnvFile('.env.local');
+// ENV_FILE=.env.production.local pnpm seed  seeds another environment
+const envFile = process.env.ENV_FILE ?? '.env.local';
+if (existsSync(envFile)) process.loadEnvFile(envFile);
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const secret = process.env.SUPABASE_SECRET_KEY;

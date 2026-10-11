@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, types, unit tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      # Configuration is read at request time, so the build needs no secrets
+      - run: pnpm build
+
+  integration:
+    name: Database integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Start Supabase (Postgres, Auth, REST) and apply migrations
+        run: pnpm exec supabase start -x edge-runtime,imgproxy,logflare,vector,realtime,storage-api,studio,mailpit,postgres-meta,supavisor
+      - name: Export local keys
+        run: |
+          pnpm exec supabase status -o env > supabase.env
+          set -a; . ./supabase.env; set +a
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY"
+            echo "SUPABASE_SECRET_KEY=$SECRET_KEY"
+          } >> "$GITHUB_ENV"
+      - name: Generated types match the schema
+        run: |
+          pnpm db:types
+          git diff --exit-code --stat -- src/lib/db/database.types.ts
+      - run: pnpm test:integration
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          CRON_SECRET: ci-cron-secret

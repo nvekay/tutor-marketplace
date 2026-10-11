@@ -5,9 +5,8 @@ takes place, then pays the tutor minus a platform fee. Cancellations, refunds an
 
 Next.js 16 · TypeScript · Supabase (Postgres, Auth, row level security) · Stripe Connect (test mode) · Tailwind CSS
 
-> Work in progress. Done: accounts, tutor onboarding with Stripe Connect, schedules, slot search, booking and
-> payment with Stripe Checkout, cancellations and refunds, payouts to tutors, complaints and chargebacks.
-> Next: admin panel, UI polish, deployment.
+Try it as a student, a tutor or an admin with one click on the sign-in page. Everything runs in Stripe test mode:
+pay with `4242 4242 4242 4242`, any future date and any CVC.
 
 ## Run locally
 
@@ -22,8 +21,7 @@ pnpm dev             # http://localhost:3000
 pnpm cron --watch    # time-based jobs every minute (expire unpaid holds, …)
 ```
 
-On `/login`, the demo buttons sign you in as a student, a tutor or a read-only admin. Pay on Stripe Checkout with
-the test card `4242 4242 4242 4242`, any future date and any CVC.
+On `/login`, the demo buttons sign you in as a student, a tutor or an admin.
 
 Stripe webhooks locally (Stripe CLI):
 
@@ -92,3 +90,33 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook \
   is a cancelled lesson that still pays the tutor part of the price.
 - **Row level security:** visitors see only listed tutors; students and tutors see only their own bookings; users can
   edit only harmless fields (name, time zone, tutor profile and price). Everything that moves money runs on the server.
+
+## Tests
+
+```bash
+pnpm test               # unit: slots, time zones and DST, pricing, refund policy, state machine
+pnpm test:integration   # against local Supabase: double-booking races, row level security, jobs, webhook idempotency
+pnpm test:e2e           # Playwright + real Stripe test mode: book and pay on Checkout, cancel, complaint, payout
+pnpm audit:payments     # reconciles every booking with Stripe: payment, refunds, transfers, reversals, stuck states
+```
+
+The end-to-end tests finish by running the payment audit, so a passing run also means the database and Stripe agree
+on every cent. CI (GitHub Actions) runs formatting, lint, types, unit tests and the build, and the integration tests
+against a Supabase started in Docker.
+
+## Deploy (Vercel + Supabase)
+
+1. **Supabase:** create a project, then `supabase link --project-ref <ref>` and `supabase db push` to apply the
+   migrations. In Authentication → URL configuration set the site URL to the app's domain.
+2. **Vercel:** import the repository and set the variables from `.env.example` (Supabase URL and keys, Stripe test key,
+   `CRON_SECRET`, `DEMO_PASSWORD`, `NEXT_PUBLIC_SITE_URL`; `ALLOW_TIME_TRAVEL=true` enables the admin demo shortcuts).
+3. **Stripe webhooks** (Dashboard → Developers → Webhooks):
+   - `https://<domain>/api/stripe/webhook`, snapshot payload, events from your account and connected accounts:
+     `checkout.session.completed`, `checkout.session.expired`, `charge.dispute.created`, `charge.dispute.closed`,
+     `account.updated` → `STRIPE_WEBHOOK_SECRET`
+   - `https://<domain>/api/stripe/events`, thin payload: `v2.core.account[configuration.recipient].capability_status_updated`,
+     `v2.core.account[requirements].updated` → `STRIPE_THIN_WEBHOOK_SECRET`
+4. **Scheduler:** run [`supabase/sql/schedule-jobs.sql`](supabase/sql/schedule-jobs.sql) in the SQL editor (pg_cron calls
+   `/api/cron/tick` every 5 minutes with the secret from Vault).
+5. **Demo data:** `ENV_FILE=.env.production.local pnpm seed`, then `ENV_FILE=.env.production.local pnpm audit:payments`
+   any time to check the books.

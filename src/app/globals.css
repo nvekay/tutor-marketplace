@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-accent: oklch(0.55 0.12 180);
+  --color-accent-strong: oklch(0.48 0.12 180);
+  --color-accent-soft: oklch(0.96 0.03 180);
+
+  --animate-fade-in: fade-in 0.2s ease-out both;
+  --animate-slide-in: slide-in 0.2s ease-out both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+  @keyframes slide-in {
+    from {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+}
+
+/* Visible keyboard focus everywhere, invisible for mouse clicks */
+:where(a, button, [tabindex]):focus-visible {
+  @apply rounded-md outline-2 outline-offset-2 outline-accent/60;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

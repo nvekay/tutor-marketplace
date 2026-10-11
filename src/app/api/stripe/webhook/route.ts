@@ -1,6 +1,7 @@
 // Snapshot events from Stripe (payments, refunds, transfers, and v1 account updates of connected accounts).
 // Every event is verified by signature and handled at most once (see handleOnce).
 import type Stripe from 'stripe';
+import { onChargebackClosed, onChargebackOpened } from '@/lib/bookings/lifecycle';
 import { confirmFromCheckout, expireBooking } from '@/lib/bookings/service';
 import { env } from '@/lib/env';
 import { syncConnectedAccount } from '@/lib/payments/connect';
@@ -15,6 +16,12 @@ async function dispatch(event: Stripe.Event) {
       break;
     case 'checkout.session.completed':
       await confirmFromCheckout(event.data.object);
+      break;
+    case 'charge.dispute.created':
+      await onChargebackOpened(event.data.object);
+      break;
+    case 'charge.dispute.closed':
+      await onChargebackClosed(event.data.object);
       break;
     case 'checkout.session.expired': {
       const bookingId = event.data.object.metadata?.booking_id;

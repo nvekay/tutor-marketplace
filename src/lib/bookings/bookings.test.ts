@@ -32,6 +32,7 @@ describe('booking state machine', () => {
     ['completed', 'disputed'],
     ['disputed', 'completed'],
     ['disputed', 'cancelled'],
+    ['disputed', 'confirmed'],
   ];
   const statuses: BookingStatus[] = ['pending_payment', 'confirmed', 'completed', 'disputed', 'cancelled', 'expired'];
 

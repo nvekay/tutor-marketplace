@@ -158,7 +158,10 @@ create table public.bookings (
   cancelled_by text check (cancelled_by in ('student', 'tutor', 'admin', 'system')),
   cancel_reason text,
   dispute_reason text,
+  -- Set when the card holder opened a chargeback (the bank decides, not the admin)
+  stripe_dispute_id text unique,
   resolution text,
+  reminder_sent_at timestamptz,
   -- Past lessons created by the demo seed (so tutors have reviews); no Stripe money behind them,
   -- excluded from revenue metrics and the payment audit
   seeded boolean not null default false,

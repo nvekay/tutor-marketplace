@@ -14,7 +14,7 @@ import { stripe } from '../payments/stripe';
 import { lessonPriceCents, platformFeeCents } from './pricing';
 import { assertTransition, HOLD_GRACE_MINUTES, HOLD_MINUTES, type BookingStatus } from './state';
 
-type Booking = Database['public']['Tables']['bookings']['Row'];
+export type Booking = Database['public']['Tables']['bookings']['Row'];
 type Actor = 'student' | 'tutor' | 'admin' | 'system' | 'stripe';
 
 export class BookingError extends Error {}
@@ -32,12 +32,12 @@ export async function logBookingEvent(
     .insert({ booking_id: bookingId, type, actor_role: actor.role, actor_id: actor.id ?? null, data });
 }
 
-async function notify(userId: string, bookingId: string, kind: string, title: string, body = '') {
+export async function notify(userId: string, bookingId: string, kind: string, title: string, body = '') {
   await db().from('notifications').insert({ user_id: userId, booking_id: bookingId, kind, title, body });
 }
 
 /** Moves a booking to a new status only if it is still in the expected one (safe under concurrency) */
-async function transition(
+export async function transition(
   booking: Pick<Booking, 'id' | 'status'>,
   to: BookingStatus,
   changes: Database['public']['Tables']['bookings']['Update'] = {},
@@ -68,7 +68,7 @@ export async function expireStaleHolds(now = new Date()): Promise<number> {
   return data.length;
 }
 
-const lessonLabel = (start: Date, timezone: string) =>
+export const lessonLabel = (start: Date, timezone: string) =>
   start.toLocaleString('en-US', {
     weekday: 'short',
     month: 'short',
@@ -199,7 +199,7 @@ export async function createBooking(input: {
   return session.url!;
 }
 
-async function loadBooking(id: string): Promise<Booking | null> {
+export async function loadBooking(id: string): Promise<Booking | null> {
   const { data } = await db().from('bookings').select('*').eq('id', id).maybeSingle();
   return data;
 }
@@ -312,7 +312,7 @@ export async function abandonCheckout(bookingId: string, studentId: string): Pro
   return loadBooking(booking.id);
 }
 
-async function lessonSummary(booking: Booking) {
+export async function lessonSummary(booking: Booking) {
   const { data: people } = await db()
     .from('profiles')
     .select('id, full_name, timezone')

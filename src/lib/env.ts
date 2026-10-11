@@ -20,6 +20,9 @@ const schema = z.object({
   STRIPE_THIN_WEBHOOK_SECRET: optional(z.string()),
   PLATFORM_FEE_BPS: z.coerce.number().int().min(0).max(5000).default(1500),
   CRON_SECRET: z.string().min(8),
+  // Lets /api/cron/tick run jobs as of a later time (?now=…) to show a lesson's whole life in minutes.
+  // On by default outside production; test-mode money only.
+  ALLOW_TIME_TRAVEL: optional(z.enum(['true', 'false'])),
   DEMO_PASSWORD: optional(z.string().min(8)),
 });
 

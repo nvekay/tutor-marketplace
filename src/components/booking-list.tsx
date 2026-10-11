@@ -1,6 +1,16 @@
 import Link from 'next/link';
 import type { BookingItem } from '@/lib/bookings/queries';
 import { formatUsd } from '@/lib/tutors';
+import { BookingActions } from './booking-actions';
+
+/** Tutor's view of the money for a lesson */
+const PAYOUT: Record<string, string> = {
+  none: 'paid after the lesson',
+  scheduled: 'payout scheduled',
+  held: 'on hold',
+  paid: 'paid out',
+  reversed: 'payout reversed',
+};
 
 const STATUS: Record<BookingItem['status'], { label: string; className: string }> = {
   pending_payment: {
@@ -48,7 +58,6 @@ export function BookingList({
       {items.map((b) => {
         const status = STATUS[b.status];
         const start = new Date(b.startsAt);
-        const amount = perspective === 'tutor' ? b.priceCents - b.platformFeeCents : b.priceCents;
         return (
           <li key={b.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-sm">
             <div className="w-28 shrink-0">
@@ -66,10 +75,21 @@ export function BookingList({
                 <p className="font-medium">{b.counterpartName}</p>
               )}
               <p className="text-slate-500">
-                {perspective === 'tutor' ? 'Your share ' : ''}
-                {formatUsd(amount)}
-                {b.refundedCents > 0 && ` · refunded ${formatUsd(b.refundedCents)}`}
+                {perspective === 'tutor' ? (
+                  <>
+                    Your share {formatUsd(b.tutorCents)}
+                    {PAYOUT[b.payoutStatus] && ` · ${PAYOUT[b.payoutStatus]}`}
+                  </>
+                ) : (
+                  <>
+                    Paid {formatUsd(b.priceCents)}
+                    {b.refundedCents > 0 && ` · refunded ${formatUsd(b.refundedCents)}`}
+                  </>
+                )}
               </p>
+              {(b.resolution ?? b.disputeReason) && (
+                <p className="text-xs text-slate-500">{b.resolution ?? b.disputeReason}</p>
+              )}
             </div>
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}>{status.label}</span>
             {perspective === 'student' && b.status === 'pending_payment' && (
@@ -80,6 +100,7 @@ export function BookingList({
                 Pay now
               </Link>
             )}
+            <BookingActions item={b} perspective={perspective} />
           </li>
         );
       })}

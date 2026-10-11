@@ -6,7 +6,8 @@ takes place, then pays the tutor minus a platform fee. Cancellations, refunds an
 Next.js 16 · TypeScript · Supabase (Postgres, Auth, row level security) · Stripe Connect (test mode) · Tailwind CSS
 
 > Work in progress. Done: accounts, tutor onboarding with Stripe Connect, schedules, slot search, booking and
-> payment with Stripe Checkout. Next: cancellations and refunds, payouts to tutors, disputes.
+> payment with Stripe Checkout, cancellations and refunds, payouts to tutors, complaints and chargebacks.
+> Next: admin panel, UI polish, deployment.
 
 ## Run locally
 
@@ -54,6 +55,26 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook \
    both run the same idempotent code. Amount and currency are checked against the booking.
 4. Leaving Checkout expires the session at Stripe first, then releases the slot. Unpaid holds are released by the cron
    job. A payment that lands after its hold expired is confirmed if the time is still free, otherwise refunded in full.
+
+## After payment: refunds, payouts, disputes
+
+| Event                                | Student gets back | Tutor gets                  | When the tutor is paid     |
+| ------------------------------------ | ----------------- | --------------------------- | -------------------------- |
+| Student cancels 24 h or more ahead   | 100%              | nothing                     | –                          |
+| Student cancels later                | 50%               | 85% of the other half       | at the original lesson end |
+| Tutor cancels                        | 100%              | nothing                     | –                          |
+| Lesson takes place                   | –                 | 85% of the price            | 24 h after the lesson      |
+| Complaint within 24 h, admin decides | 0–100%            | 85% of what isn't refunded  | when resolved              |
+| Chargeback before the payout         | bank decides      | held until the bank decides | if the platform wins       |
+| Chargeback after the payout          | bank decides      | transfer reversed           | again if the platform wins |
+
+- Payouts are Stripe transfers with `source_transaction` = the student's charge, so a transfer can't outrun the money
+  it comes from, and an idempotency key per payout, so a retried job never pays twice.
+- Every money move calls Stripe first (with an idempotency key), then records the result with a conditional update.
+  If the second step fails, the retry repeats a no-op Stripe call and completes the record.
+- `/api/cron/tick` runs the time-based jobs: expire unpaid holds, send reminders a day ahead, mark finished lessons
+  completed, pay tutors whose complaint window has closed. Outside production it accepts `?now=<time>` to run the
+  jobs as of a later moment, which shows a lesson's whole life in a few seconds.
 
 ## Schedules and slots
 

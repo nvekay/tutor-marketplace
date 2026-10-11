@@ -12,8 +12,8 @@ const TRANSITIONS: Record<BookingStatus, readonly BookingStatus[]> = {
   confirmed: ['completed', 'cancelled', 'disputed'],
   // A complaint within 24 hours of the lesson, or a chargeback
   completed: ['disputed'],
-  // Resolved by an admin: pay the tutor (completed) or refund (cancelled)
-  disputed: ['completed', 'cancelled'],
+  // Resolved: pay the tutor (completed), refund (cancelled), or a chargeback won before the lesson (confirmed)
+  disputed: ['completed', 'cancelled', 'confirmed'],
   cancelled: [],
 };
 

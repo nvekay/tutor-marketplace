@@ -16,6 +16,8 @@ const schema = z.object({
       .refine((key) => !key.startsWith('sk_live_'), 'This demo runs in Stripe test mode only: use an sk_test_ key'),
   ),
   STRIPE_WEBHOOK_SECRET: optional(z.string()),
+  // Thin events (Accounts v2 updates) arrive at a separate endpoint with its own signing secret
+  STRIPE_THIN_WEBHOOK_SECRET: optional(z.string()),
   PLATFORM_FEE_BPS: z.coerce.number().int().min(0).max(5000).default(1500),
   CRON_SECRET: z.string().min(8),
   DEMO_PASSWORD: optional(z.string().min(8)),

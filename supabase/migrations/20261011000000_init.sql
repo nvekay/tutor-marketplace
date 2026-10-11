@@ -54,12 +54,17 @@ create table public.tutors (
   subjects text[] not null default '{}',
   hourly_rate_cents integer not null default 3000 check (hourly_rate_cents between 500 and 50000),
   lesson_minutes smallint not null default 60 check (lesson_minutes in (30, 45, 60, 90)),
+  -- Stripe connected account (Accounts v2, recipient configuration), synced from Stripe:
+  -- transfers_enabled: the platform can send lesson earnings to the tutor's Stripe balance
+  -- payouts_enabled: Stripe can pay that balance out to the tutor's bank (informational)
   stripe_account_id text unique,
-  charges_enabled boolean not null default false,
+  transfers_enabled boolean not null default false,
   payouts_enabled boolean not null default false,
+  stripe_requirements text[] not null default '{}',
+  stripe_synced_at timestamptz,
   -- Shown in search only when the tutor can actually be paid and the profile is filled in
   listed boolean generated always as (
-    charges_enabled and payouts_enabled and headline <> '' and cardinality(subjects) > 0
+    transfers_enabled and headline <> '' and cardinality(subjects) > 0
   ) stored,
   rating_avg numeric(3, 2),
   rating_count integer not null default 0,
@@ -116,6 +121,18 @@ create table public.availability_exceptions (
   check (end_minute is null or end_minute > start_minute)
 );
 create index availability_exceptions_tutor_date_idx on public.availability_exceptions (tutor_id, date);
+
+-- Replaces the signed-in tutor's weekly hours in one transaction (the editor saves the whole week).
+-- Runs as the caller, so row level security still applies; the app validates overlaps first.
+create function public.replace_availability_rules(p_rules jsonb) returns void
+language plpgsql security invoker set search_path = '' as $$
+begin
+  delete from public.availability_rules where tutor_id = auth.uid();
+  insert into public.availability_rules (tutor_id, weekday, start_minute, end_minute)
+  select auth.uid(), (r ->> 'weekday')::smallint, (r ->> 'startMinute')::smallint, (r ->> 'endMinute')::smallint
+  from jsonb_array_elements(p_rules) r;
+end $$;
+revoke execute on function public.replace_availability_rules(jsonb) from public, anon;
 
 -- ─── bookings ─────────────────────────────────────────────────────────────────
 

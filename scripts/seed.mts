@@ -1,7 +1,9 @@
-// Demo data: shared demo accounts, 12 tutors with weekly schedules, and past lessons with reviews.
+// Demo data: shared demo accounts, 12 tutors with weekly schedules and Stripe test accounts,
+// and past lessons with reviews.
 // Safe to re-run: seed users are recreated from scratch, demo accounts are kept.
 //   pnpm seed
 import { createClient } from '@supabase/supabase-js';
+import Stripe from 'stripe';
 import { existsSync } from 'node:fs';
 
 if (existsSync('.env.local')) process.loadEnvFile('.env.local');
@@ -42,6 +44,77 @@ async function findUserId(email: string): Promise<string | null> {
     if (user) return user.id;
     if (data.users.length < 200) return null;
   }
+}
+
+// ─── Stripe test accounts for seeded tutors ───────────────────────────────────
+// Created through the API with Stripe's test identity values, so they can receive transfers right away
+// (real tutors go through Stripe-hosted onboarding instead). Reused across runs by metadata.seed_key.
+
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (stripeKey?.startsWith('sk_live_')) throw new Error('The seed only runs with a test mode key');
+const stripe = stripeKey ? new Stripe(stripeKey) : null;
+
+let seedAccounts: Map<string, string> | undefined;
+
+async function existingSeedAccounts(): Promise<Map<string, string>> {
+  if (seedAccounts) return seedAccounts;
+  seedAccounts = new Map();
+  for await (const account of stripe!.v2.core.accounts.list({ limit: 20, closed: false })) {
+    const key = account.metadata?.seed_key;
+    if (key) seedAccounts.set(key, account.id);
+  }
+  return seedAccounts;
+}
+
+async function seedStripeAccount(seedKey: string, fullName: string): Promise<string> {
+  const existing = (await existingSeedAccounts()).get(seedKey);
+  if (existing) return existing;
+  const [given, ...rest] = fullName.split(' ');
+  const account = await stripe!.v2.core.accounts.create({
+    display_name: fullName,
+    contact_email: seedKey,
+    // No Stripe dashboard and the platform collects the details: the API can submit them directly
+    dashboard: 'none',
+    identity: {
+      country: 'us',
+      entity_type: 'individual',
+      attestations: { terms_of_service: { account: { date: new Date().toISOString(), ip: '127.0.0.1' } } },
+      business_details: { phone: '0000000000' },
+      individual: {
+        given_name: given,
+        surname: rest.join(' ') || 'Tutor',
+        email: seedKey,
+        phone: '0000000000',
+        // Stripe's test values that verify immediately
+        date_of_birth: { day: 1, month: 1, year: 1901 },
+        id_numbers: [{ type: 'us_ssn', value: '000000000' }],
+        address: {
+          line1: 'address_full_match',
+          city: 'San Francisco',
+          state: 'CA',
+          postal_code: '94111',
+          country: 'us',
+        },
+      },
+    },
+    defaults: {
+      currency: 'usd',
+      profile: {
+        business_url: 'https://github.com/nvekay/tutor-marketplace',
+        product_description: 'Online tutoring lessons',
+      },
+      responsibilities: { fees_collector: 'application', losses_collector: 'application' },
+    },
+    configuration: { recipient: { capabilities: { stripe_balance: { stripe_transfers: { requested: true } } } } },
+    metadata: { seed_key: seedKey },
+  });
+  seedAccounts!.set(seedKey, account.id);
+  return account.id;
+}
+
+async function transfersActive(accountId: string): Promise<boolean> {
+  const account = await stripe!.v2.core.accounts.retrieve(accountId, { include: ['configuration.recipient'] });
+  return account.configuration?.recipient?.capabilities?.stripe_balance?.stripe_transfers?.status === 'active';
 }
 
 // ─── demo accounts (public, used by the "Try as …" buttons) ───────────────────
@@ -281,8 +354,11 @@ async function main() {
     });
   }
 
+  if (!stripe) console.warn('STRIPE_SECRET_KEY is not set: tutors are listed without Stripe accounts (no payments)');
+  const emails = [DEMO[1].email, ...TUTORS.map((_, i) => `tutor${i + 1}@${SEED_DOMAIN}`)];
+
   for (const [i, t] of tutorRows.entries()) {
-    // Without Stripe keys, tutors are marked payout-ready so the catalogue can be built before payments exist
+    const accountId = stripe ? await seedStripeAccount(emails[i], t.name) : null;
     const { error } = await db
       .from('tutors')
       .update({
@@ -291,8 +367,11 @@ async function main() {
         subjects: t.subjects,
         hourly_rate_cents: t.rate * 100,
         lesson_minutes: 60,
-        charges_enabled: true,
-        payouts_enabled: true,
+        stripe_account_id: accountId,
+        transfers_enabled: accountId ? await transfersActive(accountId) : true,
+        payouts_enabled: false,
+        stripe_requirements: [],
+        stripe_synced_at: accountId ? new Date().toISOString() : null,
       })
       .eq('profile_id', t.id);
     if (error) throw error;

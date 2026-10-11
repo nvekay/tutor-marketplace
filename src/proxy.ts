@@ -31,6 +31,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip static files, images and the Stripe webhook (it authenticates by signature, not cookies)
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon.png|api/stripe/webhook|api/cron).*)'],
+  // Skip static files, images and Stripe webhooks (they authenticate by signature, not cookies)
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon.png|api/stripe|api/cron).*)'],
 };

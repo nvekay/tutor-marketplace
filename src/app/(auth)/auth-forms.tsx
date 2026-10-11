@@ -4,19 +4,8 @@ import { BookOpen, GraduationCap, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useActionState, useState, useSyncExternalStore, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
+import { Field, inputClass } from '@/components/ui/field';
 import { signIn, signInAsDemo, signUp, type AuthState } from './actions';
-
-const inputClass =
-  'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition hover:border-slate-400 focus:border-accent focus:ring-2 focus:ring-accent/20 dark:border-slate-700 dark:bg-slate-900';
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="flex flex-col gap-1.5 text-sm">
-      <span className="text-slate-600 dark:text-slate-400">{label}</span>
-      {children}
-    </label>
-  );
-}
 
 const noopSubscribe = () => () => {};
 

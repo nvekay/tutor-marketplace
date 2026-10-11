@@ -1,4 +1,5 @@
 import 'server-only';
+import { createSupabaseAdminClient } from './db/admin';
 import { createSupabaseServerClient } from './db/server';
 
 export interface TutorCard {
@@ -72,3 +73,58 @@ export const formatUsd = (cents: number) =>
     currency: 'USD',
     maximumFractionDigits: cents % 100 ? 2 : 0,
   }).format(cents / 100);
+
+export interface TutorProfile extends TutorCard {
+  bio: string;
+  reviews: { rating: number; comment: string; author: string; createdAt: string }[];
+}
+
+/** Public tutor page. Visible when listed (or to the tutor themselves); reviewers are shown by first name. */
+export async function getTutorProfile(id: string): Promise<TutorProfile | null> {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
+  const supabase = await createSupabaseServerClient();
+  const { data: t } = await supabase
+    .from('tutors')
+    .select(
+      'profile_id, headline, bio, subjects, hourly_rate_cents, lesson_minutes, rating_avg, rating_count, profiles(full_name, timezone)',
+    )
+    .eq('profile_id', id)
+    .maybeSingle();
+  if (!t) return null;
+
+  // Students' profiles are private, so their first names are read with the service role
+  const { data: reviews } = await createSupabaseAdminClient()
+    .from('reviews')
+    .select('rating, comment, created_at, profiles!reviews_student_id_fkey(full_name)')
+    .eq('tutor_id', id)
+    .order('created_at', { ascending: false })
+    .limit(20);
+
+  return {
+    id: t.profile_id,
+    fullName: t.profiles?.full_name ?? 'Tutor',
+    timezone: t.profiles?.timezone ?? 'UTC',
+    headline: t.headline,
+    bio: t.bio,
+    subjects: t.subjects,
+    hourlyRateCents: t.hourly_rate_cents,
+    lessonMinutes: t.lesson_minutes,
+    ratingAvg: t.rating_avg === null ? null : Number(t.rating_avg),
+    ratingCount: t.rating_count,
+    reviews: (reviews ?? []).map((r) => ({
+      rating: r.rating,
+      comment: r.comment,
+      author: shortName(r.profiles?.full_name ?? ''),
+      createdAt: r.created_at,
+    })),
+  };
+}
+
+/** "Liam Walker" → "Liam W." */
+const shortName = (name: string) => {
+  const [first, last] = name.trim().split(/\s+/);
+  return first ? `${first}${last ? ` ${last[0]}.` : ''}` : 'Student';
+};
+
+export const lessonPriceCents = (hourlyRateCents: number, lessonMinutes: number) =>
+  Math.round((hourlyRateCents * lessonMinutes) / 60);

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { SiteHeader } from '@/components/site-header';
+import { TimezoneCookie } from '@/components/timezone-cookie';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body className="flex min-h-dvh flex-col">
         <Providers>
+          <TimezoneCookie />
           <SiteHeader />
           {children}
         </Providers>

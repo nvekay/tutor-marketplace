@@ -203,14 +203,14 @@ isOneToOne: false
                   ]
                 },"tutors": {
                   Row: {
-                    "bio": string,"charges_enabled": boolean,"created_at": string,"headline": string,"hourly_rate_cents": number,"lesson_minutes": number,"listed": boolean | null,"payouts_enabled": boolean,"profile_id": string,"rating_avg": number | null,"rating_count": number,"stripe_account_id": string | null,"subjects": (string)[],"updated_at": string
+                    "bio": string,"created_at": string,"headline": string,"hourly_rate_cents": number,"lesson_minutes": number,"listed": boolean | null,"payouts_enabled": boolean,"profile_id": string,"rating_avg": number | null,"rating_count": number,"stripe_account_id": string | null,"stripe_requirements": (string)[],"stripe_synced_at": string | null,"subjects": (string)[],"transfers_enabled": boolean,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "bio"?: string,"charges_enabled"?: boolean,"created_at"?: string,"headline"?: string,"hourly_rate_cents"?: number,"lesson_minutes"?: number,"listed"?: never,"payouts_enabled"?: boolean,"profile_id": string,"rating_avg"?: number | null,"rating_count"?: number,"stripe_account_id"?: string | null,"subjects"?: (string)[],"updated_at"?: string
+                    "bio"?: string,"created_at"?: string,"headline"?: string,"hourly_rate_cents"?: number,"lesson_minutes"?: number,"listed"?: never,"payouts_enabled"?: boolean,"profile_id": string,"rating_avg"?: number | null,"rating_count"?: number,"stripe_account_id"?: string | null,"stripe_requirements"?: (string)[],"stripe_synced_at"?: string | null,"subjects"?: (string)[],"transfers_enabled"?: boolean,"updated_at"?: string
                   }
                   Update: {
-                    "bio"?: string,"charges_enabled"?: boolean,"created_at"?: string,"headline"?: string,"hourly_rate_cents"?: number,"lesson_minutes"?: number,"listed"?: never,"payouts_enabled"?: boolean,"profile_id"?: string,"rating_avg"?: number | null,"rating_count"?: number,"stripe_account_id"?: string | null,"subjects"?: (string)[],"updated_at"?: string
+                    "bio"?: string,"created_at"?: string,"headline"?: string,"hourly_rate_cents"?: number,"lesson_minutes"?: number,"listed"?: never,"payouts_enabled"?: boolean,"profile_id"?: string,"rating_avg"?: number | null,"rating_count"?: number,"stripe_account_id"?: string | null,"stripe_requirements"?: (string)[],"stripe_synced_at"?: string | null,"subjects"?: (string)[],"transfers_enabled"?: boolean,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -229,6 +229,9 @@ isOneToOne: true
           Functions: {
             "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"replace_availability_rules":
+{ Args: { "p_rules": Json }; Returns: undefined
                            }
           }
           Enums: {

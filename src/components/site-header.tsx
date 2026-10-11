@@ -22,7 +22,10 @@ export async function SiteHeader() {
           </span>
         </Link>
         <nav className="flex items-center gap-1 text-sm">
-          <NavLink href="/tutors">Find a tutor</NavLink>
+          <NavLink href="/tutors">
+            <span className="sm:hidden">Tutors</span>
+            <span className="hidden sm:inline">Find a tutor</span>
+          </NavLink>
           {viewer ? (
             <>
               <NavLink href={homeFor(viewer.role)}>{HOME_LABEL[viewer.role]}</NavLink>

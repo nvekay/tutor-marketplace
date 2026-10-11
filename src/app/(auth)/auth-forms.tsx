@@ -13,10 +13,11 @@ function ErrorText({ state }: { state: AuthState }) {
   return state.error ? <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p> : null;
 }
 
-export function SignInForm() {
+export function SignInForm({ next }: { next?: string }) {
   const [state, action, pending] = useActionState(signIn, {});
   return (
     <form action={action} className="flex flex-col gap-3">
+      {next && <input type="hidden" name="next" value={next} />}
       <Field label="Email">
         <input name="email" type="email" required autoComplete="username" className={inputClass} />
       </Field>
@@ -44,7 +45,7 @@ const DEMO_ROLES = [
 ] as const;
 
 /** One click into a shared demo account, so visitors can try every side of the marketplace */
-export function DemoSignIn() {
+export function DemoSignIn({ next }: { next?: string }) {
   const [pendingRole, setPendingRole] = useState<string | null>(null);
   const [error, setError] = useState<string>();
   const [, startTransition] = useTransition();
@@ -61,7 +62,7 @@ export function DemoSignIn() {
             onClick={() => {
               setPendingRole(role);
               startTransition(async () => {
-                const result = await signInAsDemo(role);
+                const result = await signInAsDemo(role, next);
                 setError(result?.error);
                 setPendingRole(null);
               });

@@ -1,9 +1,7 @@
 import 'server-only';
+import { BLOCKING_STATUSES, isStaleHold } from '../bookings/state';
 import { createSupabaseAdminClient } from '../db/admin';
 import { generateSlots, type DateException, type SlotQuery, type TimeRange, type WeeklyRule } from './slots';
-
-/** Bookings that occupy the tutor's time: paid lessons and checkouts in progress */
-const BUSY_STATUSES = ['pending_payment', 'confirmed', 'completed', 'disputed'] as const;
 
 /**
  * Everything needed to compute a tutor's free slots. Read with the service role because students
@@ -21,9 +19,9 @@ export async function loadSlotQuery(
     db.from('availability_exceptions').select('date, start_minute, end_minute').eq('tutor_id', tutorId),
     db
       .from('bookings')
-      .select('starts_at, ends_at')
+      .select('starts_at, ends_at, status, hold_expires_at')
       .eq('tutor_id', tutorId)
-      .in('status', [...BUSY_STATUSES])
+      .in('status', [...BLOCKING_STATUSES])
       .lt('starts_at', range.to.toISOString())
       .gt('ends_at', range.from.toISOString()),
   ]);
@@ -43,7 +41,10 @@ export async function loadSlotQuery(
       startMinute: e.start_minute,
       endMinute: e.end_minute,
     })),
-    busy: (busy.data ?? []).map<TimeRange>((b) => ({ start: new Date(b.starts_at), end: new Date(b.ends_at) })),
+    // Paid lessons and checkouts in progress; abandoned checkouts past their hold don't count
+    busy: (busy.data ?? [])
+      .filter((b) => !isStaleHold(b, now))
+      .map<TimeRange>((b) => ({ start: new Date(b.starts_at), end: new Date(b.ends_at) })),
     from: range.from,
     to: range.to,
     now,

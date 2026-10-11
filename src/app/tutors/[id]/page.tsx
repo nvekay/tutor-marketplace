@@ -6,10 +6,11 @@ import { findSlots } from '@/lib/availability/service';
 import { addDays, BOOKING_HORIZON_DAYS, localDateKey, startOfLocalDay } from '@/lib/availability/slots';
 import { getViewer } from '@/lib/auth';
 import { viewerTimezone } from '@/lib/timezone';
-import { formatUsd, getTutorProfile, lessonPriceCents } from '@/lib/tutors';
+import { lessonPriceCents } from '@/lib/bookings/pricing';
+import { formatUsd, getTutorProfile } from '@/lib/tutors';
 import { SlotPicker, type PickerDay } from './slot-picker';
 
-type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ week?: string }> };
+type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ week?: string; checkout?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tutor = await getTutorProfile((await params).id);
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const MAX_WEEK = Math.floor(BOOKING_HORIZON_DAYS / 7);
 
 export default async function TutorPage({ params, searchParams }: Props) {
-  const [{ id }, { week }] = await Promise.all([params, searchParams]);
+  const [{ id }, { week, checkout }] = await Promise.all([params, searchParams]);
   const tutor = await getTutorProfile(id);
   if (!tutor) notFound();
   const [viewer, timezone] = await Promise.all([getViewer(), viewerTimezone()]);
@@ -56,6 +57,11 @@ export default async function TutorPage({ params, searchParams }: Props) {
       >
         <ChevronLeft className="size-4" aria-hidden /> All tutors
       </Link>
+      {checkout === 'cancelled' && (
+        <p role="status" className="mt-4 rounded-lg bg-slate-100 px-4 py-3 text-sm dark:bg-slate-800">
+          Payment cancelled, nothing was charged. The time is free again if you want to pick it once more.
+        </p>
+      )}
 
       <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_22rem]">
         <section aria-labelledby="tutor-name">
@@ -113,6 +119,7 @@ export default async function TutorPage({ params, searchParams }: Props) {
             <p className="mt-1 text-sm text-slate-500">Times in your time zone: {timezone}</p>
             <SlotPicker
               key={`${weekIndex}-${timezone}`}
+              tutorId={tutor.id}
               days={days}
               timezone={timezone}
               tutorName={tutor.fullName}

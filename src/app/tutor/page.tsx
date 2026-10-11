@@ -2,7 +2,9 @@ import { CircleCheck, CircleDashed, ExternalLink, Eye, EyeOff, RefreshCw } from 
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ActionButton } from '@/components/action-button';
+import { BookingList } from '@/components/booking-list';
 import { requireViewer } from '@/lib/auth';
+import { listMyBookings } from '@/lib/bookings/queries';
 import { env } from '@/lib/env';
 import { paymentsConfigured } from '@/lib/payments/stripe';
 import { getMyTutorProfile, onboardingSteps, type MyTutorProfile } from '@/lib/tutor-account';
@@ -18,7 +20,7 @@ const RETURN_MESSAGES: Record<string, { tone: 'ok' | 'warn' | 'error'; text: str
 
 export default async function TutorDashboardPage({ searchParams }: { searchParams: Promise<{ payouts?: string }> }) {
   const viewer = await requireViewer('tutor');
-  const tutor = await getMyTutorProfile(viewer);
+  const [tutor, bookings] = await Promise.all([getMyTutorProfile(viewer), listMyBookings(viewer)]);
   const steps = onboardingSteps(tutor);
   const returned = RETURN_MESSAGES[(await searchParams).payouts ?? ''];
 
@@ -85,6 +87,22 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
             </li>
           ))}
         </ol>
+      </section>
+
+      <section aria-labelledby="lessons-title">
+        <h2 id="lessons-title" className="mb-3 font-medium">
+          Upcoming lessons
+        </h2>
+        <BookingList
+          items={bookings.upcoming}
+          timezone={tutor.timezone}
+          perspective="tutor"
+          empty={
+            <p className="rounded-xl border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-500 dark:border-slate-700">
+              No upcoming lessons yet. They appear here as soon as a student pays.
+            </p>
+          }
+        />
       </section>
 
       <PayoutsCard tutor={tutor} />

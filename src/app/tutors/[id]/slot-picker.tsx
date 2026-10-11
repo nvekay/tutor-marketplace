@@ -2,8 +2,11 @@
 
 import { CalendarX } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/toast';
+import { bookLesson } from './actions';
 
 export interface PickerDay {
   /** yyyy-MM-dd in the viewer's time zone */
@@ -12,6 +15,7 @@ export interface PickerDay {
 }
 
 interface Props {
+  tutorId: string;
   days: PickerDay[];
   timezone: string;
   tutorName: string;
@@ -28,7 +32,7 @@ const dayLabel = (date: string) => {
   };
 };
 
-export function SlotPicker({ days, timezone, tutorName, priceLabel, lessonMinutes, viewerRole }: Props) {
+export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, lessonMinutes, viewerRole }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const empty = days.every((d) => d.slots.length === 0);
 
@@ -98,18 +102,33 @@ export function SlotPicker({ days, timezone, tutorName, priceLabel, lessonMinute
               {selectedLabel} · <span className="font-medium text-slate-900 dark:text-slate-100">{priceLabel}</span>
             </p>
           </div>
-          <BookAction role={viewerRole} />
+          <BookAction role={viewerRole} tutorId={tutorId} startsAt={selected} onUnavailable={() => setSelected(null)} />
         </div>
       )}
     </div>
   );
 }
 
-function BookAction({ role }: { role: Props['viewerRole'] }) {
+function BookAction({
+  role,
+  tutorId,
+  startsAt,
+  onUnavailable,
+}: {
+  role: Props['viewerRole'];
+  tutorId: string;
+  startsAt: string;
+  onUnavailable: () => void;
+}) {
+  const [pending, startTransition] = useTransition();
+  const router = useRouter();
+  const pathname = usePathname();
+  const toast = useToast();
+
   if (role === null)
     return (
       <Link
-        href="/login"
+        href={`/login?next=${encodeURIComponent(pathname)}`}
         className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
       >
         Sign in to book
@@ -122,8 +141,22 @@ function BookAction({ role }: { role: Props['viewerRole'] }) {
       </p>
     );
   return (
-    <Button variant="primary" disabled title="Checkout is added in the next step">
-      Book and pay
+    <Button
+      variant="primary"
+      loading={pending}
+      onClick={() =>
+        startTransition(async () => {
+          // On success the action redirects to Stripe Checkout
+          const result = await bookLesson(tutorId, startsAt);
+          if (result?.error) {
+            toast.error(result.error);
+            onUnavailable();
+            router.refresh();
+          }
+        })
+      }
+    >
+      {pending ? 'Opening checkout…' : 'Book and pay'}
     </Button>
   );
 }

@@ -125,6 +125,3 @@ const shortName = (name: string) => {
   const [first, last] = name.trim().split(/\s+/);
   return first ? `${first}${last ? ` ${last[0]}.` : ''}` : 'Student';
 };
-
-export const lessonPriceCents = (hourlyRateCents: number, lessonMinutes: number) =>
-  Math.round((hourlyRateCents * lessonMinutes) / 60);

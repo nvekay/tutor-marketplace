@@ -5,8 +5,8 @@ takes place, then pays the tutor minus a platform fee. Cancellations, refunds an
 
 Next.js 16 · TypeScript · Supabase (Postgres, Auth, row level security) · Stripe Connect (test mode) · Tailwind CSS
 
-> Work in progress. Done: accounts, tutor onboarding with Stripe Connect, schedules and slot search.
-> Next: booking with Stripe Checkout, refunds, payouts.
+> Work in progress. Done: accounts, tutor onboarding with Stripe Connect, schedules, slot search, booking and
+> payment with Stripe Checkout. Next: cancellations and refunds, payouts to tutors, disputes.
 
 ## Run locally
 
@@ -18,9 +18,11 @@ pnpm db:start        # local Supabase in Docker; prints the keys for .env.local
 cp .env.example .env.local   # fill in the Supabase keys and a Stripe test key (sk_test_…)
 pnpm seed            # demo accounts, 13 tutors with schedules, reviews and Stripe test accounts
 pnpm dev             # http://localhost:3000
+pnpm cron --watch    # time-based jobs every minute (expire unpaid holds, …)
 ```
 
-On `/login`, the demo buttons sign you in as a student, a tutor or a read-only admin.
+On `/login`, the demo buttons sign you in as a student, a tutor or a read-only admin. Pay on Stripe Checkout with
+the test card `4242 4242 4242 4242`, any future date and any CVC.
 
 Stripe webhooks locally (Stripe CLI):
 
@@ -41,6 +43,17 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook \
 - Every webhook is verified by signature and stored by event id before it is handled, so a redelivered event is a no-op.
 - Seeded tutors get accounts created through the API with Stripe's test identity values, so the demo works without
   anyone clicking through onboarding.
+
+## Booking and payment
+
+1. The student picks a slot; the server checks it is still free and creates a `pending_payment` booking that holds
+   the time for 30 minutes (the database rejects a second hold on the same time).
+2. A Stripe Checkout session is created on the platform account with the same 30-minute expiry, an idempotency key and
+   `transfer_group` = the booking, so the later transfer to the tutor is linked to this payment.
+3. The booking is confirmed by `checkout.session.completed` (webhook) or by the success page, whichever comes first;
+   both run the same idempotent code. Amount and currency are checked against the booking.
+4. Leaving Checkout expires the session at Stripe first, then releases the slot. Unpaid holds are released by the cron
+   job. A payment that lands after its hold expired is confirmed if the time is still free, otherwise refunded in full.
 
 ## Schedules and slots
 

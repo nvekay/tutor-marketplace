@@ -48,5 +48,9 @@ export async function requireViewer(role?: Role): Promise<Viewer> {
   return viewer;
 }
 
+/** Only same-site paths are accepted as a place to return to after signing in ("/x", not "//evil.com") */
+export const safeNext = (next: unknown): string | null =>
+  typeof next === 'string' && next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\') ? next : null;
+
 /** Where each role lands after signing in */
 export const homeFor = (role: Role) => (role === 'tutor' ? '/tutor' : role === 'admin' ? '/admin' : '/dashboard');

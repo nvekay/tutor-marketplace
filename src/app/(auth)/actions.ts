@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { homeFor } from '@/lib/auth';
+import { homeFor, safeNext } from '@/lib/auth';
 import { createSupabaseServerClient } from '@/lib/db/server';
 import { env } from '@/lib/env';
 
@@ -21,13 +21,13 @@ const signUpSchema = credentials.extend({
   timezone: z.string().min(1).max(64),
 });
 
-async function landAfterSignIn(): Promise<never> {
+async function landAfterSignIn(next?: string | null): Promise<never> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user!.id).single();
-  redirect(homeFor(profile?.role ?? 'student'));
+  redirect(next ?? homeFor(profile?.role ?? 'student'));
 }
 
 export async function signIn(_: AuthState, form: FormData): Promise<AuthState> {
@@ -38,7 +38,7 @@ export async function signIn(_: AuthState, form: FormData): Promise<AuthState> {
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error)
     return { error: error.message === 'Invalid login credentials' ? 'Wrong email or password' : error.message };
-  return landAfterSignIn();
+  return landAfterSignIn(safeNext(form.get('next')));
 }
 
 export async function signUp(_: AuthState, form: FormData): Promise<AuthState> {
@@ -66,13 +66,13 @@ const DEMO_ACCOUNTS = {
 } as const;
 
 /** "Try as student / tutor / admin": shared public demo accounts (the admin one is read-only) */
-export async function signInAsDemo(role: keyof typeof DEMO_ACCOUNTS): Promise<AuthState> {
+export async function signInAsDemo(role: keyof typeof DEMO_ACCOUNTS, next?: string): Promise<AuthState> {
   const password = env().DEMO_PASSWORD;
   if (!password) return { error: 'Demo accounts are not configured' };
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithPassword({ email: DEMO_ACCOUNTS[role], password });
   if (error) return { error: 'The demo account is not available right now' };
-  return landAfterSignIn();
+  return landAfterSignIn(safeNext(next));
 }
 
 export async function signOut() {

@@ -2,8 +2,8 @@ node_modules/
 .next/
 next-env.d.ts
 *.tsbuildinfo
-.env
-.env*.local
+.env*
+!.env.example
 *.log
 coverage/
 playwright-report/

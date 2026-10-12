@@ -29,8 +29,8 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Hi, {tutor.fullName.split(' ')[0] || 'there'}</h1>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Times are shown in {tutor.timezone}.</p>
+          <h1 className="text-3xl font-semibold">Hi, {tutor.fullName.split(' ')[0] || 'there'}</h1>
+          <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">Times are shown in {tutor.timezone}.</p>
         </div>
         {tutor.listed ? (
           <Link
@@ -40,7 +40,7 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
             <Eye className="size-4" aria-hidden /> Listed in search
           </Link>
         ) : (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-3 py-1 text-sm text-stone-600 dark:bg-stone-800 dark:text-stone-300">
             <EyeOff className="size-4" aria-hidden /> Not listed yet
           </span>
         )}
@@ -61,11 +61,14 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
         </p>
       )}
 
-      <section aria-labelledby="steps-title" className="rounded-xl border border-slate-200 p-5 dark:border-slate-800">
+      <section
+        aria-labelledby="steps-title"
+        className="rounded-2xl border border-stone-200/80 bg-white shadow-card p-5 dark:border-stone-800 dark:bg-stone-900"
+      >
         <h2 id="steps-title" className="font-medium">
           {steps.every((s) => s.done) ? 'You’re all set' : 'Get ready to teach'}
         </h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+        <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
           Students find you once your profile, hours and payouts are ready.
         </p>
         <ol className="mt-4 grid gap-2 sm:grid-cols-3">
@@ -73,15 +76,15 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
             <li key={step.key}>
               <Link
                 href={step.href}
-                className="flex items-center gap-2.5 rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition hover:border-accent/60 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
+                className="flex items-center gap-2.5 rounded-lg border border-stone-200 px-3 py-2.5 text-sm transition hover:border-accent/60 hover:bg-stone-50 dark:border-stone-800 dark:hover:bg-stone-900"
               >
                 {step.done ? (
                   <CircleCheck className="size-5 shrink-0 text-emerald-600" aria-label="Done" />
                 ) : (
-                  <CircleDashed className="size-5 shrink-0 text-slate-400" aria-label="To do" />
+                  <CircleDashed className="size-5 shrink-0 text-stone-400" aria-label="To do" />
                 )}
                 <span>
-                  <span className="block text-xs text-slate-500">Step {i + 1}</span>
+                  <span className="block text-xs text-stone-500">Step {i + 1}</span>
                   {step.label}
                 </span>
               </Link>
@@ -101,7 +104,7 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
           timezone={tutor.timezone}
           perspective="tutor"
           empty={
-            <p className="rounded-xl border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-500 dark:border-slate-700">
+            <p className="rounded-xl border border-dashed border-stone-300 px-4 py-8 text-center text-sm text-stone-500 dark:border-stone-700">
               No upcoming lessons yet. They appear here as soon as a student pays.
             </p>
           }
@@ -119,7 +122,7 @@ function PayoutsCard({ tutor }: { tutor: MyTutorProfile }) {
     <section
       id="payouts"
       aria-labelledby="payouts-title"
-      className="scroll-mt-20 rounded-xl border border-slate-200 p-5 dark:border-slate-800"
+      className="scroll-mt-20 rounded-2xl border border-stone-200/80 bg-white shadow-card p-5 dark:border-stone-800 dark:bg-stone-900"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="payouts-title" className="font-medium">
@@ -127,7 +130,7 @@ function PayoutsCard({ tutor }: { tutor: MyTutorProfile }) {
         </h2>
         <PayoutBadge tutor={tutor} />
       </div>
-      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+      <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
         Students pay when they book. The money is held by the platform until the lesson is over and the 24-hour
         complaint window has passed, then your share ({100 - feePercent}% of the price) is sent to your Stripe account.
       </p>
@@ -139,7 +142,7 @@ function PayoutsCard({ tutor }: { tutor: MyTutorProfile }) {
           <ActionButton variant="primary" action={startPayoutOnboarding}>
             Set up payouts with Stripe
           </ActionButton>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-stone-500">
             Test mode: Stripe’s onboarding offers test data, so you don’t need real documents or a bank account.
           </p>
         </div>
@@ -147,7 +150,7 @@ function PayoutsCard({ tutor }: { tutor: MyTutorProfile }) {
         <div className="mt-4 flex flex-col gap-3">
           {tutor.stripeRequirements.length > 0 && (
             <div className="text-sm">
-              <p className="text-slate-600 dark:text-slate-400">Stripe still needs:</p>
+              <p className="text-stone-600 dark:text-stone-400">Stripe still needs:</p>
               <ul className="mt-1 flex flex-wrap gap-1.5">
                 {tutor.stripeRequirements.map((r) => (
                   <li
@@ -167,7 +170,7 @@ function PayoutsCard({ tutor }: { tutor: MyTutorProfile }) {
               </ActionButton>
             )}
             {tutor.isDemo ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-stone-500">
                 The demo tutor’s Stripe account is managed by the platform (no Stripe dashboard).
               </p>
             ) : (
@@ -193,7 +196,7 @@ function PayoutBadge({ tutor }: { tutor: MyTutorProfile }) {
       </span>
     );
   return (
-    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+    <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs text-stone-600 dark:bg-stone-800 dark:text-stone-300">
       {tutor.stripeAccountId ? 'Setup in progress' : 'Not set up'}
     </span>
   );
@@ -222,10 +225,13 @@ function Earnings({ items }: { items: Awaited<ReturnType<typeof listMyBookings>>
   return (
     <section aria-label="Earnings" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {cards.map((c) => (
-        <div key={c.label} className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
-          <p className="text-xs text-slate-500">{c.label}</p>
+        <div
+          key={c.label}
+          className="rounded-2xl border border-stone-200/80 bg-white shadow-card p-4 dark:border-stone-800 dark:bg-stone-900"
+        >
+          <p className="text-xs text-stone-500">{c.label}</p>
           <p className="mt-1 text-xl font-semibold tabular-nums">{formatUsd(c.value)}</p>
-          <p className="text-xs text-slate-500">{c.hint}</p>
+          <p className="text-xs text-stone-500">{c.hint}</p>
         </div>
       ))}
     </section>

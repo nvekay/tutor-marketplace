@@ -58,7 +58,7 @@ export function BookingActions({ item, perspective }: { item: BookingItem; persp
       </div>
 
       {panel && (
-        <div className="animate-fade-in basis-full rounded-lg bg-slate-50 p-3 dark:bg-slate-900">
+        <div className="animate-fade-in basis-full rounded-lg bg-stone-50 p-3 dark:bg-stone-900">
           {panel === 'cancel' && (
             <>
               <p className="text-sm">
@@ -138,7 +138,7 @@ export function BookingActions({ item, perspective }: { item: BookingItem; persp
                     className="rounded p-0.5 transition-transform hover:scale-110"
                   >
                     <Star
-                      className={`size-6 ${n <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-slate-600'}`}
+                      className={`size-6 ${n <= rating ? 'fill-amber-400 text-amber-400' : 'text-stone-300 dark:text-stone-600'}`}
                       aria-hidden
                     />
                   </button>

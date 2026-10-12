@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Avatar } from '@/components/avatar';
 import { findSlots } from '@/lib/availability/service';
 import { addDays, BOOKING_HORIZON_DAYS, localDateKey, startOfLocalDay } from '@/lib/availability/slots';
 import { getViewer } from '@/lib/auth';
@@ -53,34 +54,29 @@ export default async function TutorPage({ params, searchParams }: Props) {
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
       <Link
         href="/tutors"
-        className="inline-flex items-center gap-1 text-sm text-slate-500 transition-colors hover:text-slate-800 dark:hover:text-slate-200"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 transition-colors hover:text-stone-800 dark:hover:text-stone-200"
       >
         <ChevronLeft className="size-4" aria-hidden /> All tutors
       </Link>
       {checkout === 'cancelled' && (
-        <p role="status" className="mt-4 rounded-lg bg-slate-100 px-4 py-3 text-sm dark:bg-slate-800">
+        <p role="status" className="mt-4 rounded-lg bg-stone-100 px-4 py-3 text-sm dark:bg-stone-800">
           Payment cancelled, nothing was charged. The time is free again if you want to pick it once more.
         </p>
       )}
 
       <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_22rem]">
         <section aria-labelledby="tutor-name">
-          <div className="flex items-start gap-4">
-            <span
-              className="grid size-16 shrink-0 place-items-center rounded-full bg-accent-soft text-lg font-semibold text-accent dark:bg-slate-800 dark:text-teal-300"
-              aria-hidden
-            >
-              {initials(tutor.fullName)}
-            </span>
+          <div className="flex items-start gap-5">
+            <Avatar name={tutor.fullName} size="lg" />
             <div className="min-w-0">
-              <h1 id="tutor-name" className="text-2xl font-semibold tracking-tight">
+              <h1 id="tutor-name" className="text-4xl leading-tight font-semibold">
                 {tutor.fullName}
               </h1>
-              <p className="mt-0.5 text-slate-700 dark:text-slate-300">{tutor.headline}</p>
-              <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500">
+              <p className="mt-1 font-display text-lg text-stone-700 italic dark:text-stone-300">{tutor.headline}</p>
+              <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-stone-500">
                 {tutor.ratingAvg ? (
                   <span className="inline-flex items-center gap-1">
-                    <Star className="size-4 fill-amber-400 text-amber-400" aria-hidden />
+                    <Star className="size-4 fill-amber-500 text-amber-500" aria-hidden />
                     {tutor.ratingAvg.toFixed(1)} · {tutor.ratingCount} reviews
                   </span>
                 ) : (
@@ -94,18 +90,21 @@ export default async function TutorPage({ params, searchParams }: Props) {
           </div>
           <ul className="mt-4 flex flex-wrap gap-1.5">
             {tutor.subjects.map((s) => (
-              <li key={s} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-sm dark:bg-slate-800">
+              <li
+                key={s}
+                className="rounded-full border border-stone-300 px-3 py-0.5 text-sm text-stone-700 dark:border-stone-700 dark:text-stone-300"
+              >
                 {s}
               </li>
             ))}
           </ul>
           {tutor.bio && (
-            <p className="mt-5 max-w-prose whitespace-pre-line text-slate-700 dark:text-slate-300">{tutor.bio}</p>
+            <p className="mt-5 max-w-prose whitespace-pre-line text-stone-700 dark:text-stone-300">{tutor.bio}</p>
           )}
 
           <div className="mt-8">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold tracking-tight">Pick a time</h2>
+              <h2 className="text-2xl font-semibold">Pick a time</h2>
               <div className="flex items-center gap-1">
                 <WeekLink id={tutor.id} week={weekIndex - 1} disabled={weekIndex === 0} label="Previous week">
                   <ChevronLeft className="size-4" aria-hidden />
@@ -116,7 +115,7 @@ export default async function TutorPage({ params, searchParams }: Props) {
                 </WeekLink>
               </div>
             </div>
-            <p className="mt-1 text-sm text-slate-500">Times in your time zone: {timezone}</p>
+            <p className="mt-1 text-sm text-stone-500">Times in your time zone: {timezone}</p>
             <SlotPicker
               key={`${weekIndex}-${timezone}`}
               tutorId={tutor.id}
@@ -131,29 +130,32 @@ export default async function TutorPage({ params, searchParams }: Props) {
         </section>
 
         <aside aria-labelledby="reviews-title">
-          <h2 id="reviews-title" className="text-lg font-semibold tracking-tight">
+          <h2 id="reviews-title" className="text-2xl font-semibold">
             Reviews
           </h2>
           {tutor.reviews.length === 0 ? (
-            <p className="mt-2 text-sm text-slate-500">No reviews yet.</p>
+            <p className="mt-2 text-sm text-stone-500">No reviews yet.</p>
           ) : (
             <ul className="mt-3 flex flex-col gap-3">
               {tutor.reviews.map((r, i) => (
-                <li key={i} className="rounded-xl border border-slate-200 p-3 text-sm dark:border-slate-800">
+                <li
+                  key={i}
+                  className="rounded-2xl border border-stone-200/80 bg-white p-4 text-sm shadow-card dark:border-stone-800 dark:bg-stone-900"
+                >
                   <p className="flex items-center justify-between gap-2">
                     <span className="font-medium">{r.author}</span>
                     <span className="flex" aria-label={`${r.rating} out of 5`}>
                       {Array.from({ length: 5 }, (_, k) => (
                         <Star
                           key={k}
-                          className={`size-3.5 ${k < r.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300 dark:text-slate-600'}`}
+                          className={`size-3.5 ${k < r.rating ? 'fill-amber-400 text-amber-400' : 'text-stone-300 dark:text-stone-600'}`}
                           aria-hidden
                         />
                       ))}
                     </span>
                   </p>
-                  {r.comment && <p className="mt-1 text-slate-700 dark:text-slate-300">{r.comment}</p>}
-                  <p className="mt-1 text-xs text-slate-500">{shortDate(r.createdAt.slice(0, 10))}</p>
+                  {r.comment && <p className="mt-1 text-stone-700 dark:text-stone-300">{r.comment}</p>}
+                  <p className="mt-1 text-xs text-stone-500">{shortDate(r.createdAt.slice(0, 10))}</p>
                 </li>
               ))}
             </ul>
@@ -178,7 +180,7 @@ function WeekLink({
   children: React.ReactNode;
 }) {
   const className =
-    'grid size-8 place-items-center rounded-md border border-slate-200 transition-colors dark:border-slate-800';
+    'grid size-8 place-items-center rounded-md border border-stone-200 transition-colors dark:border-stone-800';
   if (disabled)
     return (
       <span className={`${className} opacity-40`} aria-disabled="true" aria-label={label}>
@@ -190,7 +192,7 @@ function WeekLink({
       href={week === 0 ? `/tutors/${id}` : `/tutors/${id}?week=${week}`}
       scroll={false}
       aria-label={label}
-      className={`${className} hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900`}
+      className={`${className} hover:border-stone-300 hover:bg-stone-50 dark:hover:bg-stone-900`}
     >
       {children}
     </Link>
@@ -200,11 +202,3 @@ function WeekLink({
 /** "2027-01-04" → "Jan 4" */
 const shortDate = (date: string) =>
   new Date(`${date}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .map((p) => p[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();

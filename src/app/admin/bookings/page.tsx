@@ -21,7 +21,7 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Bookings</h1>
+      <h1 className="text-3xl font-semibold">Bookings</h1>
       <nav className="mt-4 mb-4 flex flex-wrap gap-1.5" aria-label="Filter bookings">
         {BOOKING_FILTERS.map((f) => (
           <Link
@@ -31,7 +31,7 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
             className={`rounded-full px-3 py-1 text-sm transition-colors ${
               f === filter
                 ? 'bg-accent text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                : 'bg-stone-100 text-stone-700 hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'
             }`}
           >
             {LABELS[f]}
@@ -39,7 +39,7 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
         ))}
       </nav>
       <BookingsTable items={items} empty="No bookings here." />
-      {items.length === 100 && <p className="mt-2 text-xs text-slate-500">Showing the latest 100.</p>}
+      {items.length === 100 && <p className="mt-2 text-xs text-stone-500">Showing the latest 100.</p>}
     </div>
   );
 }

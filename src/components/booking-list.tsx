@@ -21,10 +21,10 @@ const STATUS: Record<BookingItem['status'], { label: string; className: string }
     label: 'Confirmed',
     className: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300',
   },
-  completed: { label: 'Completed', className: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' },
+  completed: { label: 'Completed', className: 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300' },
   disputed: { label: 'Under review', className: 'bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300' },
-  cancelled: { label: 'Cancelled', className: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' },
-  expired: { label: 'Not paid', className: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' },
+  cancelled: { label: 'Cancelled', className: 'bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400' },
+  expired: { label: 'Not paid', className: 'bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400' },
 };
 
 /** Lessons of a student or a tutor, times in the viewer's time zone */
@@ -54,7 +54,7 @@ export function BookingList({
   });
 
   return (
-    <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+    <ul className="divide-y divide-stone-200 rounded-2xl border border-stone-200/80 bg-white shadow-card dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
       {items.map((b) => {
         const status = STATUS[b.status];
         const start = new Date(b.startsAt);
@@ -62,7 +62,7 @@ export function BookingList({
           <li key={b.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-sm">
             <div className="w-28 shrink-0">
               <p className="font-medium">{day.format(start)}</p>
-              <p className="text-slate-500 tabular-nums">
+              <p className="text-stone-500 tabular-nums">
                 {time.format(start)}–{time.format(new Date(b.endsAt))}
               </p>
             </div>
@@ -74,7 +74,7 @@ export function BookingList({
               ) : (
                 <p className="font-medium">{b.counterpartName}</p>
               )}
-              <p className="text-slate-500">
+              <p className="text-stone-500">
                 {perspective === 'tutor' ? (
                   <>
                     Your share {formatUsd(b.tutorCents)}
@@ -88,7 +88,7 @@ export function BookingList({
                 )}
               </p>
               {(b.resolution ?? b.disputeReason) && (
-                <p className="text-xs text-slate-500">{b.resolution ?? b.disputeReason}</p>
+                <p className="text-xs text-stone-500">{b.resolution ?? b.disputeReason}</p>
               )}
             </div>
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}>{status.label}</span>

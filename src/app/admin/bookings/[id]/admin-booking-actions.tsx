@@ -37,18 +37,18 @@ export function AdminBookingActions({
     });
 
   if (!canCancel && !canResolve && !canFastForward)
-    return <p className="text-sm text-slate-500">No actions available for this booking.</p>;
+    return <p className="text-sm text-stone-500">No actions available for this booking.</p>;
 
   const refundCents = Math.round(Number(refundUsd) * 100);
   const refundValid = Number.isFinite(refundCents) && refundCents >= 0 && refundCents <= priceCents;
 
   return (
-    <section className="flex flex-col gap-4 rounded-xl border border-slate-200 p-4 dark:border-slate-800">
+    <section className="flex flex-col gap-4 rounded-2xl border border-stone-200/80 bg-white shadow-card p-4 dark:border-stone-800 dark:bg-stone-900">
       <h2 className="font-medium">Actions</h2>
 
       {canResolve && (
         <div className="flex flex-col gap-2">
-          <p className="text-sm text-slate-600 dark:text-slate-400">Resolve the complaint: refund the student</p>
+          <p className="text-sm text-stone-600 dark:text-stone-400">Resolve the complaint: refund the student</p>
           <div className="flex gap-1.5">
             {[0, 0.5, 1].map((share) => (
               <Button key={share} size="sm" onClick={() => setRefundUsd(((priceCents * share) / 100).toFixed(2))}>
@@ -57,7 +57,7 @@ export function AdminBookingActions({
             ))}
           </div>
           <label className="text-sm">
-            <span className="text-slate-600 dark:text-slate-400">Refund, USD</span>
+            <span className="text-stone-600 dark:text-stone-400">Refund, USD</span>
             <input
               type="number"
               min={0}
@@ -94,7 +94,7 @@ export function AdminBookingActions({
           <Button loading={pending} onClick={() => run(() => fastForward(bookingId))}>
             <FastForward className="size-4" aria-hidden /> {fastForwardLabel}
           </Button>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-stone-500">
             Demo shortcut instead of waiting for the lesson time and the 24 hours.
           </p>
         </div>

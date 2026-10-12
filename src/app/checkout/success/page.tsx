@@ -64,23 +64,23 @@ export default async function CheckoutSuccessPage({
             text: 'The time was booked by someone else while you were paying, so we refunded you in full.',
           }
         : {
-            icon: <Clock className="size-10 text-slate-400" aria-hidden />,
+            icon: <Clock className="size-10 text-stone-400" aria-hidden />,
             title: 'Payment is processing',
             text: 'We’ll confirm your lesson as soon as Stripe confirms the payment. You can close this page.',
           };
 
   return (
     <main className="mx-auto w-full max-w-lg flex-1 px-4 py-12">
-      <div className="animate-fade-in rounded-2xl border border-slate-200 p-6 text-center dark:border-slate-800">
+      <div className="animate-fade-in rounded-2xl border border-stone-200 p-6 text-center dark:border-stone-800">
         <div className="flex justify-center">{state.icon}</div>
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight">{state.title}</h1>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{state.text}</p>
-        <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 rounded-xl bg-slate-50 p-4 text-left text-sm dark:bg-slate-900">
-          <dt className="text-slate-500">Tutor</dt>
+        <h1 className="mt-3 text-3xl font-semibold">{state.title}</h1>
+        <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">{state.text}</p>
+        <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 rounded-xl bg-stone-50 p-4 text-left text-sm dark:bg-stone-900">
+          <dt className="text-stone-500">Tutor</dt>
           <dd>{tutor?.full_name}</dd>
-          <dt className="text-slate-500">When</dt>
+          <dt className="text-stone-500">When</dt>
           <dd>{when}</dd>
-          <dt className="text-slate-500">Paid</dt>
+          <dt className="text-stone-500">Paid</dt>
           <dd>
             {formatUsd(booking.price_cents)}
             {booking.refunded_cents > 0 && ` (refunded ${formatUsd(booking.refunded_cents)})`}
@@ -95,7 +95,7 @@ export default async function CheckoutSuccessPage({
           </Link>
           <Link
             href="/tutors"
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-900"
+            className="rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-stone-50 dark:border-stone-700 dark:hover:bg-stone-900"
           >
             Find another tutor
           </Link>

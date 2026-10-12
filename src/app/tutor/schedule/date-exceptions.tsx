@@ -39,7 +39,7 @@ export function DateExceptions({ exceptions, timezone }: { exceptions: DateExcep
     <div className="mt-4 grid gap-6 md:grid-cols-2">
       <form
         action={action}
-        className="flex flex-col gap-3 rounded-xl border border-slate-200 p-4 dark:border-slate-800"
+        className="flex flex-col gap-3 rounded-2xl border border-stone-200/80 bg-white shadow-card p-4 dark:border-stone-800 dark:bg-stone-900"
       >
         <Field label={`Date (${timezone})`}>
           <input name="date" type="date" required className={inputClass} />
@@ -70,7 +70,7 @@ export function DateExceptions({ exceptions, timezone }: { exceptions: DateExcep
                 setEnd(Math.max(end, m + 30));
               }}
             />
-            <span className="text-slate-400">–</span>
+            <span className="text-stone-400">–</span>
             <TimeSelect label="Until" value={end} min={start + 30} onChange={setEnd} />
             <input type="hidden" name="start" value={minuteLabel(start)} />
             <input type="hidden" name="end" value={minuteLabel(end)} />
@@ -85,22 +85,22 @@ export function DateExceptions({ exceptions, timezone }: { exceptions: DateExcep
       </form>
 
       {exceptions.length === 0 ? (
-        <p className="text-sm text-slate-500 md:pt-4">No upcoming days off or special hours.</p>
+        <p className="text-sm text-stone-500 md:pt-4">No upcoming days off or special hours.</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {exceptions.map((e) => (
             <li
               key={e.date}
-              className="flex items-center gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-800"
+              className="flex items-center gap-3 rounded-lg border border-stone-200 px-3 py-2 text-sm dark:border-stone-800"
             >
               {e.startMinute === null ? (
-                <CalendarOff className="size-4 shrink-0 text-slate-400" aria-hidden />
+                <CalendarOff className="size-4 shrink-0 text-stone-400" aria-hidden />
               ) : (
-                <Clock className="size-4 shrink-0 text-slate-400" aria-hidden />
+                <Clock className="size-4 shrink-0 text-stone-400" aria-hidden />
               )}
               <span className="flex-1">
                 <span className="font-medium">{dateLabel(e.date)}</span>
-                <span className="text-slate-500">
+                <span className="text-stone-500">
                   {' · '}
                   {e.startMinute === null ? 'Day off' : `${minuteLabel(e.startMinute)}–${minuteLabel(e.endMinute!)}`}
                 </span>

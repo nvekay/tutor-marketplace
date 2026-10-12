@@ -7,7 +7,7 @@ export const stripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function signInAs(page: Page, role: 'student' | 'tutor' | 'admin', next?: string) {
   await page.goto(next ? `/login?next=${encodeURIComponent(next)}` : '/login');
-  await page.getByRole('button', { name: new RegExp(`As a ${role}`) }).click();
+  await page.getByRole('button', { name: new RegExp(`As an? ${role}`) }).click();
   await page.waitForURL(
     next ? `**${next}` : role === 'tutor' ? '**/tutor' : role === 'admin' ? '**/admin' : '**/dashboard',
   );

@@ -1,10 +1,33 @@
 @import 'tailwindcss';
 
+/* Warm "editorial" look: cream paper, sand neutrals, deep forest green, serif headlines */
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --color-accent: oklch(0.55 0.12 180);
-  --color-accent-strong: oklch(0.48 0.12 180);
-  --color-accent-soft: oklch(0.96 0.03 180);
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), ui-serif, Georgia, serif;
+
+  /* Page background and the forest-green accent; both switch for dark mode below */
+  --color-paper: var(--paper);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  /* Text on accent-soft and accent links on dark backgrounds */
+  --color-accent-ink: var(--accent-ink);
+
+  /* "stone" is the app's neutral: sand tones instead of Tailwind's cool greys */
+  --color-stone-50: #faf7f2;
+  --color-stone-100: #f3eee6;
+  --color-stone-200: #e8e1d5;
+  --color-stone-300: #d6ccbc;
+  --color-stone-400: #aba08f;
+  --color-stone-500: #837868;
+  --color-stone-600: #645b4f;
+  --color-stone-700: #4a433a;
+  --color-stone-800: #312c26;
+  --color-stone-900: #221e1a;
+  --color-stone-950: #171410;
+
+  --shadow-card: 0 1px 2px rgb(60 45 25 / 0.05), 0 10px 30px -14px rgb(60 45 25 / 0.18);
+  --shadow-card-hover: 0 2px 4px rgb(60 45 25 / 0.06), 0 18px 40px -16px rgb(60 45 25 / 0.28);
 
   --animate-fade-in: fade-in 0.2s ease-out both;
   --animate-slide-in: slide-in 0.2s ease-out both;
@@ -24,10 +47,35 @@
 
 :root {
   color-scheme: light dark;
+  --paper: #fbf8f3;
+  --accent: #1f5c46;
+  --accent-strong: #174535;
+  --accent-soft: #e2ede5;
+  --accent-ink: #1f5c46;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #13110e;
+    /* Light enough to read on the dark page, dark enough for white button text */
+    --accent: #3b8564;
+    --accent-strong: #2f6f53;
+    --accent-soft: #1c2a23;
+    --accent-ink: #8fd0b0;
+  }
 }
 
 body {
-  @apply bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  @apply bg-paper text-stone-900 antialiased dark:text-stone-100;
+}
+
+/* Headlines are set in Fraunces; its "soft" axis rounds the serifs a little */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 50;
+  letter-spacing: -0.01em;
 }
 
 /* Visible keyboard focus everywhere, invisible for mouse clicks */

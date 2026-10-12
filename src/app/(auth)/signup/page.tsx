@@ -12,8 +12,8 @@ export default async function SignUpPage({ searchParams }: { searchParams: Promi
 
   return (
     <main className="mx-auto w-full max-w-sm flex-1 px-4 py-12">
-      <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
-      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Free. Payments run in Stripe test mode.</p>
+      <h1 className="text-3xl font-semibold">Create an account</h1>
+      <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">Free. Payments run in Stripe test mode.</p>
       <div className="mt-6">
         <SignUpForm defaultRole={role === 'tutor' ? 'tutor' : 'student'} />
       </div>

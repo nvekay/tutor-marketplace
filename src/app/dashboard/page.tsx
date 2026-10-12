@@ -15,8 +15,8 @@ export default async function StudentDashboardPage() {
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">My lessons</h1>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Times shown in {viewer.timezone}</p>
+          <h1 className="text-3xl font-semibold">My lessons</h1>
+          <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">Times shown in {viewer.timezone}</p>
         </div>
         <Link
           href="/tutors"
@@ -32,7 +32,7 @@ export default async function StudentDashboardPage() {
         timezone={viewer.timezone}
         perspective="student"
         empty={
-          <div className="rounded-xl border border-dashed border-slate-300 px-4 py-10 text-center dark:border-slate-700">
+          <div className="rounded-xl border border-dashed border-stone-300 px-4 py-10 text-center dark:border-stone-700">
             <p className="font-medium">No upcoming lessons</p>
             <Link href="/tutors" className="mt-1 inline-block text-sm text-accent hover:underline">
               Find a tutor

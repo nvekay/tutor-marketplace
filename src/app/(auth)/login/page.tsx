@@ -11,15 +11,18 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   if (viewer) redirect(next ?? homeFor(viewer.role));
 
   return (
-    <main className="mx-auto w-full max-w-xl flex-1 px-4 py-12">
-      <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
-      <div className="mt-6">
+    <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-14">
+      <h1 className="text-4xl font-semibold">Welcome in</h1>
+      <p className="mt-2 text-stone-600 dark:text-stone-400">
+        Pick a side of the marketplace to explore, or use your account.
+      </p>
+      <div className="mt-8">
         <DemoSignIn next={next} />
       </div>
-      <div className="my-6 flex items-center gap-3 text-xs text-slate-400">
-        <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+      <div className="my-6 flex items-center gap-3 text-xs text-stone-400">
+        <span className="h-px flex-1 bg-stone-200 dark:bg-stone-800" />
         or with your account
-        <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+        <span className="h-px flex-1 bg-stone-200 dark:bg-stone-800" />
       </div>
       <div className="mx-auto max-w-sm">
         <SignInForm next={next} />

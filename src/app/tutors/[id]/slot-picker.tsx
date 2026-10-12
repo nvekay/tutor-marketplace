@@ -51,10 +51,10 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
   return (
     <div className="mt-3">
       {empty ? (
-        <div className="rounded-xl border border-dashed border-slate-300 px-4 py-10 text-center dark:border-slate-700">
-          <CalendarX className="mx-auto size-6 text-slate-400" aria-hidden />
+        <div className="rounded-3xl border border-dashed border-stone-300 px-4 py-12 text-center dark:border-stone-700">
+          <CalendarX className="mx-auto size-6 text-stone-400" aria-hidden />
           <p className="mt-2 font-medium">No free times this week</p>
-          <p className="text-sm text-slate-500">Try the next week.</p>
+          <p className="text-sm text-stone-500">Try the next week.</p>
         </div>
       ) : (
         <div className="grid gap-3 md:grid-cols-7 md:gap-2">
@@ -63,10 +63,10 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
             return (
               <div key={day.date} className="flex gap-3 md:flex-col md:gap-1.5">
                 <p className="w-16 shrink-0 pt-1.5 text-sm md:w-auto md:pt-0 md:text-center">
-                  <span className="font-medium">{weekday}</span> <span className="text-slate-500 md:block">{date}</span>
+                  <span className="font-medium">{weekday}</span> <span className="text-stone-500 md:block">{date}</span>
                 </p>
                 <div className="flex flex-1 flex-wrap gap-1.5 md:flex-col">
-                  {day.slots.length === 0 && <span className="pt-1.5 text-sm text-slate-400 md:text-center">—</span>}
+                  {day.slots.length === 0 && <span className="pt-1.5 text-sm text-stone-400 md:text-center">—</span>}
                   {day.slots.map((slot) => {
                     const active = selected === slot.start;
                     return (
@@ -75,10 +75,10 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
                         type="button"
                         aria-pressed={active}
                         onClick={() => setSelected(active ? null : slot.start)}
-                        className={`rounded-md border px-2.5 py-1.5 text-sm tabular-nums transition-colors ${
+                        className={`rounded-full border px-3 py-1.5 text-sm tabular-nums transition-colors ${
                           active
                             ? 'border-accent bg-accent font-medium text-white'
-                            : 'border-slate-200 hover:border-accent hover:bg-accent-soft dark:border-slate-700 dark:hover:bg-slate-800'
+                            : 'border-stone-300 bg-white hover:border-accent hover:bg-accent-soft dark:border-stone-700 dark:bg-stone-900 dark:hover:bg-stone-800'
                         }`}
                       >
                         {slot.label}
@@ -93,13 +93,13 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
       )}
 
       {selected && (
-        <div className="animate-fade-in sticky bottom-4 mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+        <div className="animate-fade-in sticky bottom-4 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-stone-200 bg-white p-5 shadow-card-hover dark:border-stone-700 dark:bg-stone-900">
           <div className="text-sm">
-            <p className="font-medium">
+            <p className="font-display text-lg font-semibold">
               {lessonMinutes}-minute lesson with {tutorName}
             </p>
-            <p className="text-slate-600 dark:text-slate-400">
-              {selectedLabel} · <span className="font-medium text-slate-900 dark:text-slate-100">{priceLabel}</span>
+            <p className="text-stone-600 dark:text-stone-400">
+              {selectedLabel} · <span className="font-medium text-stone-900 dark:text-stone-100">{priceLabel}</span>
             </p>
           </div>
           <BookAction role={viewerRole} tutorId={tutorId} startsAt={selected} onUnavailable={() => setSelected(null)} />
@@ -129,14 +129,14 @@ function BookAction({
     return (
       <Link
         href={`/login?next=${encodeURIComponent(pathname)}`}
-        className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
+        className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
       >
         Sign in to book
       </Link>
     );
   if (role !== 'student')
     return (
-      <p className="text-sm text-slate-500">
+      <p className="text-sm text-stone-500">
         {role === 'self' ? 'This is your public page' : 'Only students can book lessons'}
       </p>
     );

@@ -421,6 +421,8 @@ async function main() {
         student_id: booking.student_id,
         rating: n % 5 === 4 ? 4 : 5,
         comment: COMMENTS[(i + n) % COMMENTS.length],
+        // Written a few hours after the lesson, not on the day the demo was seeded
+        created_at: new Date(ends.getTime() + (2 + (n % 5)) * 3_600_000).toISOString(),
       });
     }
   }

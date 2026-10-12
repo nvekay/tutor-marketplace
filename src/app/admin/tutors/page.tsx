@@ -8,19 +8,19 @@ export const metadata: Metadata = { title: 'Tutors · Admin · Tutor Market' };
 
 const yes =
   'rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300';
-const no = 'rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-400';
+const no = 'rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500 dark:bg-stone-800 dark:text-stone-400';
 
 export default async function AdminTutorsPage() {
   const tutors = await listTutorAccounts();
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Tutors and Stripe accounts</h1>
-      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+      <h1 className="text-3xl font-semibold">Tutors and Stripe accounts</h1>
+      <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
         A tutor is listed once Stripe enables transfers to their account and the profile is filled in.
       </p>
-      <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+      <div className="mt-4 overflow-x-auto rounded-2xl border border-stone-200/80 bg-white shadow-card dark:border-stone-800 dark:bg-stone-900">
         <table className="w-full min-w-[48rem] text-left text-sm">
-          <thead className="bg-slate-50 text-xs text-slate-500 dark:bg-slate-900">
+          <thead className="bg-stone-50 text-xs text-stone-500 dark:bg-stone-900">
             <tr>
               <th className="px-3 py-2 font-medium">Tutor</th>
               <th className="px-3 py-2 font-medium">Listed</th>
@@ -30,15 +30,15 @@ export default async function AdminTutorsPage() {
               <th className="px-3 py-2 font-medium">Account</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+          <tbody className="divide-y divide-stone-200 dark:divide-stone-800">
             {tutors.map((t) => (
-              <tr key={t.profile_id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-900">
+              <tr key={t.profile_id} className="transition-colors hover:bg-stone-50 dark:hover:bg-stone-900">
                 <td className="px-3 py-2">
                   <Link href={`/tutors/${t.profile_id}`} className="font-medium hover:text-accent">
                     {t.profiles?.full_name || 'Unnamed'}
                   </Link>
-                  {t.profiles?.is_demo && <span className="ml-1.5 text-xs text-slate-400">demo</span>}
-                  <p className="text-xs text-slate-500">
+                  {t.profiles?.is_demo && <span className="ml-1.5 text-xs text-stone-400">demo</span>}
+                  <p className="text-xs text-stone-500">
                     {formatUsd(t.hourly_rate_cents)}/h
                     {t.rating_avg && ` · ★ ${Number(t.rating_avg).toFixed(1)} (${t.rating_count})`}
                   </p>
@@ -52,7 +52,7 @@ export default async function AdminTutorsPage() {
                 <td className="px-3 py-2">
                   <span className={t.payouts_enabled ? yes : no}>{t.payouts_enabled ? 'Active' : 'Off'}</span>
                 </td>
-                <td className="px-3 py-2 text-xs text-slate-600 dark:text-slate-400">
+                <td className="px-3 py-2 text-xs text-stone-600 dark:text-stone-400">
                   {t.stripe_requirements.length ? t.stripe_requirements.join(', ') : '—'}
                 </td>
                 <td className="px-3 py-2">
@@ -66,7 +66,7 @@ export default async function AdminTutorsPage() {
                       {t.stripe_account_id} <ExternalLink className="size-3" aria-hidden />
                     </a>
                   ) : (
-                    <span className="text-xs text-slate-400">not created</span>
+                    <span className="text-xs text-stone-400">not created</span>
                   )}
                 </td>
               </tr>

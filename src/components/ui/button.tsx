@@ -9,17 +9,17 @@ type Size = 'sm' | 'md' | 'icon';
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-accent text-white shadow-sm hover:bg-accent-strong active:bg-accent-strong/90',
   secondary:
-    'border border-slate-300 bg-white text-slate-800 hover:border-slate-400 hover:bg-slate-50 active:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600 dark:hover:bg-slate-800',
+    'border border-stone-300 bg-stone-50 text-stone-800 hover:border-stone-400 hover:bg-white active:bg-stone-100 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:hover:border-stone-600 dark:hover:bg-stone-800',
   ghost:
-    'text-slate-600 hover:bg-slate-100 hover:text-slate-900 active:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100',
+    'text-stone-600 hover:bg-stone-100 hover:text-stone-900 active:bg-stone-200 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100',
   danger:
     'text-red-600 hover:bg-red-50 active:bg-red-100 dark:text-red-400 dark:hover:bg-red-950/50 dark:active:bg-red-950',
 };
 
 const SIZES: Record<Size, string> = {
-  sm: 'h-8 gap-1.5 rounded-md px-2.5 text-xs',
-  md: 'h-10 gap-2 rounded-lg px-4 text-sm',
-  icon: 'size-8 rounded-md',
+  sm: 'h-8 gap-1.5 rounded-full px-3 text-xs',
+  md: 'h-11 gap-2 rounded-full px-5 text-sm',
+  icon: 'size-8 rounded-full',
 };
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

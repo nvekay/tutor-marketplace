@@ -1,8 +1,9 @@
-import { GraduationCap, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { signOut } from '@/app/(auth)/actions';
 import { getViewer, homeFor, type Role, type Viewer } from '@/lib/auth';
 import { createSupabaseServerClient } from '@/lib/db/server';
+import { Logo } from './logo';
 import { NavLink } from './nav-link';
 import { NotificationBell, type NotificationView } from './notification-bell';
 
@@ -44,19 +45,11 @@ export async function SiteHeader() {
   const notifications = viewer ? await loadNotifications(viewer) : null;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/85 backdrop-blur dark:border-slate-800 dark:bg-slate-950/85">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4">
-        <Link
-          href="/"
-          aria-label="Tutor Market home"
-          className="flex items-center gap-2 font-semibold whitespace-nowrap"
-        >
-          <span className="grid size-7 place-items-center rounded-md bg-accent text-white" aria-hidden>
-            <GraduationCap className="size-4" />
-          </span>
-          {/* Icon only on the narrowest phones, so the signed-in menu fits */}
-          <span className="hidden min-[400px]:inline">Tutor Market</span>
-          <span className="hidden rounded-full bg-accent-soft px-2 py-0.5 text-xs font-medium text-accent sm:inline dark:bg-slate-800 dark:text-teal-300">
+    <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-paper/85 backdrop-blur-md dark:border-stone-800">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
+        <Link href="/" aria-label="Tutor Market home" className="flex items-center gap-2.5 whitespace-nowrap">
+          <Logo />
+          <span className="hidden rounded-full border border-amber-300/70 bg-amber-50 px-2 py-0.5 text-[11px] font-medium tracking-wide text-amber-800 uppercase sm:inline dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-300">
             demo
           </span>
         </Link>
@@ -76,7 +69,7 @@ export async function SiteHeader() {
                 <button
                   type="submit"
                   title={`Signed in as ${viewer.fullName || viewer.email}`}
-                  className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-stone-600 transition-colors hover:bg-stone-200/60 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
                 >
                   <LogOut className="size-4" aria-hidden />
                   <span className="hidden sm:inline">Sign out</span>
@@ -88,7 +81,7 @@ export async function SiteHeader() {
               <NavLink href="/login">Sign in</NavLink>
               <Link
                 href="/signup"
-                className="rounded-md bg-accent px-3 py-1.5 font-medium text-white transition-colors hover:bg-accent-strong"
+                className="rounded-full bg-accent px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-accent-strong"
               >
                 Sign up
               </Link>

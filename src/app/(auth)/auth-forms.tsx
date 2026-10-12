@@ -1,8 +1,9 @@
 'use client';
 
-import { BookOpen, GraduationCap, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useActionState, useState, useSyncExternalStore, useTransition } from 'react';
+import { Avatar } from '@/components/avatar';
 import { Button } from '@/components/ui/button';
 import { Field, inputClass } from '@/components/ui/field';
 import { signIn, signInAsDemo, signUp, type AuthState } from './actions';
@@ -28,7 +29,7 @@ export function SignInForm({ next }: { next?: string }) {
       <Button type="submit" variant="primary" loading={pending}>
         Sign in
       </Button>
-      <p className="text-center text-sm text-slate-500">
+      <p className="text-center text-sm text-stone-500">
         New here?{' '}
         <Link href="/signup" className="font-medium text-accent hover:underline">
           Create an account
@@ -39,9 +40,9 @@ export function SignInForm({ next }: { next?: string }) {
 }
 
 const DEMO_ROLES = [
-  { role: 'student', label: 'Student', hint: 'Find a tutor and book a lesson', icon: BookOpen },
-  { role: 'tutor', label: 'Tutor', hint: 'Schedule, bookings and earnings', icon: GraduationCap },
-  { role: 'admin', label: 'Admin', hint: 'Payments, payouts and disputes', icon: ShieldCheck },
+  { role: 'student', person: 'Alex Morgan', label: 'Student', hint: 'Find a tutor, book and pay for a lesson' },
+  { role: 'tutor', person: 'Maria Keller', label: 'Tutor', hint: 'Hours, booked lessons and earnings' },
+  { role: 'admin', person: 'Demo Admin', label: 'Admin', hint: 'Payments, payouts, complaints' },
 ] as const;
 
 /** One click into a shared demo account, so visitors can try every side of the marketplace */
@@ -52,9 +53,9 @@ export function DemoSignIn({ next }: { next?: string }) {
 
   return (
     <div>
-      <p className="mb-2 text-sm font-medium">Try the demo without signing up</p>
-      <div className="grid gap-2 sm:grid-cols-3">
-        {DEMO_ROLES.map(({ role, label, hint, icon: Icon }) => (
+      <p className="mb-3 text-sm font-medium text-stone-600 dark:text-stone-400">Try the demo, no sign-up needed</p>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {DEMO_ROLES.map(({ role, person, label, hint }) => (
           <button
             key={role}
             type="button"
@@ -67,13 +68,19 @@ export function DemoSignIn({ next }: { next?: string }) {
                 setPendingRole(null);
               });
             }}
-            className="group rounded-xl border border-slate-200 p-3 text-left transition hover:-translate-y-px hover:border-accent hover:shadow-sm disabled:pointer-events-none disabled:opacity-60 dark:border-slate-800 dark:hover:bg-slate-900"
+            className="group flex flex-col rounded-3xl border border-stone-200/80 bg-white p-5 text-left shadow-card transition hover:-translate-y-1 hover:shadow-card-hover disabled:pointer-events-none disabled:opacity-60 dark:border-stone-800 dark:bg-stone-900"
           >
-            <Icon className="size-4 text-accent" aria-hidden />
-            <span className="mt-1.5 block text-sm font-medium">
-              {pendingRole === role ? 'Signing in…' : `As a ${label.toLowerCase()}`}
+            <span className="flex items-center justify-between">
+              <Avatar name={person} size="sm" />
+              <ArrowRight
+                className="size-4 text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-accent"
+                aria-hidden
+              />
             </span>
-            <span className="block text-xs text-slate-500">{hint}</span>
+            <span className="mt-4 font-display text-lg leading-tight font-semibold">
+              {pendingRole === role ? 'Signing in…' : `As ${role === 'admin' ? 'an' : 'a'} ${label.toLowerCase()}`}
+            </span>
+            <span className="mt-1 text-xs text-stone-500">{hint}</span>
           </button>
         ))}
       </div>
@@ -102,14 +109,14 @@ export function SignUpForm({ defaultRole }: { defaultRole: 'student' | 'tutor' }
             role="radio"
             aria-checked={role === r}
             onClick={() => setRole(r)}
-            className={`rounded-xl border p-3 text-left text-sm transition-colors ${
+            className={`rounded-2xl border p-4 text-left text-sm transition-colors ${
               role === r
-                ? 'border-accent bg-accent-soft dark:bg-slate-900'
-                : 'border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700'
+                ? 'border-accent bg-accent-soft dark:bg-stone-900'
+                : 'border-stone-200 hover:border-stone-300 dark:border-stone-800 dark:hover:border-stone-700'
             }`}
           >
             <span className="block font-medium">{r === 'student' ? 'I want to learn' : 'I want to teach'}</span>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-stone-500">
               {r === 'student' ? 'Book lessons, pay securely' : 'Set your hours, get paid after each lesson'}
             </span>
           </button>
@@ -133,12 +140,12 @@ export function SignUpForm({ defaultRole }: { defaultRole: 'student' | 'tutor' }
           className={inputClass}
         />
       </Field>
-      <p className="text-xs text-slate-500">Time zone: {timezone}</p>
+      <p className="text-xs text-stone-500">Time zone: {timezone}</p>
       <ErrorText state={state} />
       <Button type="submit" variant="primary" loading={pending}>
         Create account
       </Button>
-      <p className="text-center text-sm text-slate-500">
+      <p className="text-center text-sm text-stone-500">
         Already have an account?{' '}
         <Link href="/login" className="font-medium text-accent hover:underline">
           Sign in

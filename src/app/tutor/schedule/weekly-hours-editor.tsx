@@ -53,7 +53,7 @@ export function WeeklyHoursEditor({ initial, lessonMinutes }: { initial: WeeklyR
 
   return (
     <div className="mt-4">
-      <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+      <ul className="divide-y divide-stone-200 rounded-2xl border border-stone-200/80 bg-white shadow-card dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
         {WEEKDAYS.map((name, day) => (
           <li key={name} className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-start">
             <div className="flex w-32 shrink-0 items-center gap-2 pt-1.5">
@@ -69,7 +69,7 @@ export function WeeklyHoursEditor({ initial, lessonMinutes }: { initial: WeeklyR
               </label>
             </div>
             <div className="flex flex-1 flex-col gap-2">
-              {week[day].length === 0 && <p className="pt-1.5 text-sm text-slate-500">Unavailable</p>}
+              {week[day].length === 0 && <p className="pt-1.5 text-sm text-stone-500">Unavailable</p>}
               {week[day].map((range, k) => (
                 <div key={k} className="flex flex-wrap items-center gap-2">
                   <TimeSelect
@@ -85,7 +85,7 @@ export function WeeklyHoursEditor({ initial, lessonMinutes }: { initial: WeeklyR
                       )
                     }
                   />
-                  <span className="text-slate-400">–</span>
+                  <span className="text-stone-400">–</span>
                   <TimeSelect
                     label={`${name} until`}
                     value={range.endMinute}
@@ -141,7 +141,7 @@ export function WeeklyHoursEditor({ initial, lessonMinutes }: { initial: WeeklyR
         {'error' in validation ? (
           <p className="text-sm text-red-600 dark:text-red-400">{validation.error}</p>
         ) : (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-stone-500">
             {hoursPerWeek} hours a week{dirty ? ' · unsaved changes' : ''}
           </p>
         )}

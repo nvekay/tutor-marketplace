@@ -2,7 +2,7 @@ const tone = {
   green: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300',
   amber: 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200',
   red: 'bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300',
-  grey: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300',
+  grey: 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300',
   blue: 'bg-sky-50 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300',
 };
 

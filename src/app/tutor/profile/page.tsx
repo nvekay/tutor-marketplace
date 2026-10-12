@@ -12,8 +12,8 @@ export default async function TutorProfilePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Your profile</h1>
-      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+      <h1 className="text-3xl font-semibold">Your profile</h1>
+      <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
         This is what students see in search and on your page.
       </p>
       <ProfileForm

@@ -39,7 +39,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={t.id}
             role="status"
-            className="animate-fade-in pointer-events-auto flex w-full max-w-sm items-start gap-2.5 rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm shadow-lg dark:border-slate-700 dark:bg-slate-900"
+            className="animate-fade-in pointer-events-auto flex w-full max-w-sm items-start gap-2.5 rounded-xl border border-stone-200 bg-white px-3.5 py-3 text-sm shadow-lg dark:border-stone-700 dark:bg-stone-900"
           >
             {t.kind === 'success' ? (
               <CircleCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" aria-hidden />
@@ -51,7 +51,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               type="button"
               onClick={() => dismiss(t.id)}
               aria-label="Dismiss"
-              className="-m-1 rounded p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              className="-m-1 rounded p-1 text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-stone-800 dark:hover:text-stone-200"
             >
               <X className="size-3.5" aria-hidden />
             </button>

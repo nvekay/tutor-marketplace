@@ -100,8 +100,8 @@ export function ProfileForm({ tutor, timezones }: { tutor: ProfileValues; timezo
             </select>
           </Field>
         </div>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
-          Students pay <strong className="text-slate-900 dark:text-slate-100">${lessonPrice.toFixed(2)}</strong> per{' '}
+        <p className="text-sm text-stone-600 dark:text-stone-400">
+          Students pay <strong className="text-stone-900 dark:text-stone-100">${lessonPrice.toFixed(2)}</strong> per{' '}
           {minutes}-minute lesson.
         </p>
       </fieldset>

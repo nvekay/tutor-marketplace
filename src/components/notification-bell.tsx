@@ -54,7 +54,7 @@ export function NotificationBell({ items, unread }: { items: NotificationView[];
         onClick={toggle}
         aria-expanded={open}
         aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
-        className="relative grid size-8 place-items-center rounded-md text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100"
+        className="relative grid size-8 place-items-center rounded-md text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-900 dark:hover:text-stone-100"
       >
         <Bell className="size-4" aria-hidden />
         {unread > 0 && (
@@ -64,27 +64,27 @@ export function NotificationBell({ items, unread }: { items: NotificationView[];
         )}
       </button>
       {open && (
-        <div className="animate-fade-in absolute right-0 z-30 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
-          <p className="border-b border-slate-200 px-4 py-2.5 text-sm font-medium dark:border-slate-800">
+        <div className="animate-fade-in absolute right-0 z-30 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-stone-200 bg-white shadow-lg dark:border-stone-700 dark:bg-stone-900">
+          <p className="border-b border-stone-200 px-4 py-2.5 text-sm font-medium dark:border-stone-800">
             Notifications
           </p>
           {items.length === 0 ? (
-            <p className="px-4 py-6 text-center text-sm text-slate-500">Nothing yet</p>
+            <p className="px-4 py-6 text-center text-sm text-stone-500">Nothing yet</p>
           ) : (
-            <ul className="max-h-96 divide-y divide-slate-100 overflow-y-auto dark:divide-slate-800">
+            <ul className="max-h-96 divide-y divide-stone-100 overflow-y-auto dark:divide-stone-800">
               {items.map((n) => (
                 <li key={n.id}>
                   <Link
                     href={n.href}
                     onClick={() => setOpen(false)}
-                    className="block px-4 py-2.5 text-sm transition-colors hover:bg-slate-50 dark:hover:bg-slate-800"
+                    className="block px-4 py-2.5 text-sm transition-colors hover:bg-stone-50 dark:hover:bg-stone-800"
                   >
                     <span className="flex items-start gap-2">
                       {n.unread && <span className="mt-1.5 size-2 shrink-0 rounded-full bg-accent" aria-label="New" />}
                       <span className="min-w-0">
                         <span className="block font-medium">{n.title}</span>
-                        {n.body && <span className="block text-slate-600 dark:text-slate-400">{n.body}</span>}
-                        <span className="block text-xs text-slate-400">{ago(n.createdAt)}</span>
+                        {n.body && <span className="block text-stone-600 dark:text-stone-400">{n.body}</span>}
+                        <span className="block text-xs text-stone-400">{ago(n.createdAt)}</span>
                       </span>
                     </span>
                   </Link>

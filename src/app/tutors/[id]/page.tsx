@@ -63,7 +63,7 @@ export default async function TutorPage({ params, searchParams }: Props) {
         </p>
       )}
 
-      <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_22rem]">
+      <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_22rem]">
         <section aria-labelledby="tutor-name">
           <div className="flex items-start gap-4">
             <span

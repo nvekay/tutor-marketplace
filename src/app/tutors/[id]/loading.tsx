@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8" aria-busy="true" aria-label="Loading tutor">
       <Skeleton className="h-4 w-24" />
-      <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_22rem]">
+      <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_22rem]">
         <div>
           <div className="flex gap-4">
             <Skeleton className="size-16 rounded-full" />

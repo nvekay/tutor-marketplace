@@ -90,7 +90,7 @@ export default async function AdminBookingPage({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_20rem]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_20rem]">
         <div className="flex flex-col gap-6">
           <section className="rounded-xl border border-slate-200 p-4 dark:border-slate-800">
             <h2 className="font-medium">Money</h2>

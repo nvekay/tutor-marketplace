@@ -110,10 +110,10 @@ against a Supabase started in Docker.
    migrations. In Authentication → URL configuration set the site URL to the app's domain.
 2. **Vercel:** import the repository and set the variables from `.env.example` (Supabase URL and keys, Stripe test key,
    `CRON_SECRET`, `DEMO_PASSWORD`, `NEXT_PUBLIC_SITE_URL`; `ALLOW_TIME_TRAVEL=true` enables the admin demo shortcuts).
-3. **Stripe webhooks** (Dashboard → Developers → Webhooks):
-   - `https://<domain>/api/stripe/webhook`, snapshot payload, events from your account and connected accounts:
-     `checkout.session.completed`, `checkout.session.expired`, `charge.dispute.created`, `charge.dispute.closed`,
-     `account.updated` → `STRIPE_WEBHOOK_SECRET`
+3. **Stripe webhooks** (Workbench → Webhooks → Add destination, in the account that owns the `sk_test_` key). Both use
+   the **Your account** scope: with Accounts v2, events of the platform's own connected accounts arrive there.
+   - `https://<domain>/api/stripe/webhook`, snapshot payload: `checkout.session.completed`, `checkout.session.expired`,
+     `charge.dispute.created`, `charge.dispute.closed` → `STRIPE_WEBHOOK_SECRET`
    - `https://<domain>/api/stripe/events`, thin payload: `v2.core.account[configuration.recipient].capability_status_updated`,
      `v2.core.account[requirements].updated` → `STRIPE_THIN_WEBHOOK_SECRET`
 4. **Scheduler:** run [`supabase/sql/schedule-jobs.sql`](supabase/sql/schedule-jobs.sql) in the SQL editor (pg_cron calls

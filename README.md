@@ -116,7 +116,7 @@ against a Supabase started in Docker.
      `charge.dispute.created`, `charge.dispute.closed` → `STRIPE_WEBHOOK_SECRET`
    - `https://<domain>/api/stripe/events`, thin payload: `v2.core.account[configuration.recipient].capability_status_updated`,
      `v2.core.account[requirements].updated` → `STRIPE_THIN_WEBHOOK_SECRET`
-4. **Scheduler:** run [`supabase/sql/schedule-jobs.sql`](supabase/sql/schedule-jobs.sql) in the SQL editor (pg_cron calls
+4. **Scheduler:** run [`supabase/sql/schedule-jobs.sql`](supabase/sql/schedule-jobs.sql) in the SQL editor and add the Vault secret `cron_secret` (pg_cron calls
    `/api/cron/tick` every 5 minutes with the secret from Vault).
 5. **Demo data:** `ENV_FILE=.env.production.local pnpm seed`, then `ENV_FILE=.env.production.local pnpm audit:payments`
    any time to check the books.

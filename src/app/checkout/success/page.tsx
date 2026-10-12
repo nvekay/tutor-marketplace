@@ -71,7 +71,7 @@ export default async function CheckoutSuccessPage({
 
   return (
     <main className="mx-auto w-full max-w-lg flex-1 px-4 py-12">
-      <div className="animate-fade-in rounded-2xl border border-stone-200 p-6 text-center dark:border-stone-800">
+      <div className="animate-fade-in rounded-lg border border-stone-200 p-6 text-center dark:border-stone-800">
         <div className="flex justify-center">{state.icon}</div>
         <h1 className="mt-3 text-3xl font-semibold">{state.title}</h1>
         <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">{state.text}</p>

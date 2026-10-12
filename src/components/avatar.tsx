@@ -1,24 +1,11 @@
-// Initials on a warm colour picked from the name, so each tutor keeps the same colour everywhere
-const PALETTE = [
-  'bg-[#f4dccf] text-[#9a4a2b] dark:bg-[#3b2820] dark:text-[#f0bfa4]', // terracotta
-  'bg-[#dce8da] text-[#3f6b45] dark:bg-[#22322a] dark:text-[#a9d3b0]', // sage
-  'bg-[#f5e6c4] text-[#8a6114] dark:bg-[#382d17] dark:text-[#ecca7f]', // ochre
-  'bg-[#eadce8] text-[#76406f] dark:bg-[#33242f] dark:text-[#ddb2d6]', // plum
-  'bg-[#dce4ee] text-[#3d5a80] dark:bg-[#212b38] dark:text-[#adc2df]', // dusk blue
-  'bg-[#f6dde0] text-[#9b3e4c] dark:bg-[#3a2226] dark:text-[#eeb1ba]', // rose
-];
+import Image from 'next/image';
 
 const SIZES = {
-  sm: 'size-9 text-xs',
-  md: 'size-12 text-sm',
-  lg: 'size-20 text-2xl',
+  xs: { box: 'size-8 text-xs', px: 32 },
+  sm: { box: 'size-10 text-sm', px: 40 },
+  md: { box: 'size-14 text-base', px: 56 },
+  lg: { box: 'size-28 text-3xl', px: 112 },
 };
-
-function hash(text: string) {
-  let h = 0;
-  for (const ch of text) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return h;
-}
 
 export const initials = (name: string) =>
   name
@@ -29,10 +16,32 @@ export const initials = (name: string) =>
     .slice(0, 2)
     .toUpperCase();
 
-export function Avatar({ name, size = 'md' }: { name: string; size?: keyof typeof SIZES }) {
+/** Profile photo when there is one, otherwise initials on a neutral square */
+export function Avatar({
+  name,
+  src,
+  size = 'md',
+  className = '',
+}: {
+  name: string;
+  src?: string | null;
+  size?: keyof typeof SIZES;
+  className?: string;
+}) {
+  const { box, px } = SIZES[size];
+  if (src)
+    return (
+      <Image
+        src={src}
+        alt={name}
+        width={px}
+        height={px}
+        className={`shrink-0 rounded-lg object-cover ${box} ${className}`}
+      />
+    );
   return (
     <span
-      className={`grid shrink-0 place-items-center rounded-full font-display font-semibold ${SIZES[size]} ${PALETTE[hash(name) % PALETTE.length]}`}
+      className={`grid shrink-0 place-items-center rounded-lg bg-stone-100 font-bold text-stone-600 dark:bg-stone-800 dark:text-stone-300 ${box} ${className}`}
       aria-hidden
     >
       {initials(name)}

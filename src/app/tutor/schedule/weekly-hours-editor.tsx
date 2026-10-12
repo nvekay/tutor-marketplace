@@ -53,7 +53,7 @@ export function WeeklyHoursEditor({ initial, lessonMinutes }: { initial: WeeklyR
 
   return (
     <div className="mt-4">
-      <ul className="divide-y divide-stone-200 rounded-2xl border border-stone-200/80 bg-white shadow-card dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
+      <ul className="divide-y divide-stone-200 rounded-lg border border-stone-200/80 bg-white dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
         {WEEKDAYS.map((name, day) => (
           <li key={name} className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-start">
             <div className="flex w-32 shrink-0 items-center gap-2 pt-1.5">

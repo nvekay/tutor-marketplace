@@ -19,7 +19,7 @@ test.afterAll(() => {
 
 test('a guest sees free times in their own time zone and is asked to sign in', async ({ page }) => {
   await page.goto('/tutors');
-  await page.locator('ul li a').first().click();
+  await page.locator('[data-tutor-card] h2 a').first().click();
   await expect(page.getByText('Times in your time zone: America/New_York')).toBeVisible();
   await page.getByRole('link', { name: 'Next week' }).click();
   await page.locator('button[aria-pressed]').first().click();

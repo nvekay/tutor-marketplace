@@ -68,16 +68,16 @@ export function DemoSignIn({ next }: { next?: string }) {
                 setPendingRole(null);
               });
             }}
-            className="group flex flex-col rounded-3xl border border-stone-200/80 bg-white p-5 text-left shadow-card transition hover:-translate-y-1 hover:shadow-card-hover disabled:pointer-events-none disabled:opacity-60 dark:border-stone-800 dark:bg-stone-900"
+            className="group flex flex-col rounded-lg border-2 border-stone-200 bg-white p-5 text-left transition-colors hover:border-stone-900 disabled:pointer-events-none disabled:opacity-60 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-stone-200"
           >
             <span className="flex items-center justify-between">
               <Avatar name={person} size="sm" />
               <ArrowRight
-                className="size-4 text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-accent"
+                className="size-4 text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-stone-900 dark:group-hover:text-white"
                 aria-hidden
               />
             </span>
-            <span className="mt-4 font-display text-lg leading-tight font-semibold">
+            <span className="mt-4 text-lg leading-tight font-bold tracking-tight">
               {pendingRole === role ? 'Signing in…' : `As ${role === 'admin' ? 'an' : 'a'} ${label.toLowerCase()}`}
             </span>
             <span className="mt-1 text-xs text-stone-500">{hint}</span>
@@ -109,13 +109,13 @@ export function SignUpForm({ defaultRole }: { defaultRole: 'student' | 'tutor' }
             role="radio"
             aria-checked={role === r}
             onClick={() => setRole(r)}
-            className={`rounded-2xl border p-4 text-left text-sm transition-colors ${
+            className={`rounded-lg border-2 p-4 text-left text-sm transition-colors ${
               role === r
-                ? 'border-accent bg-accent-soft dark:bg-stone-900'
-                : 'border-stone-200 hover:border-stone-300 dark:border-stone-800 dark:hover:border-stone-700'
+                ? 'border-stone-900 dark:border-stone-200'
+                : 'border-stone-200 hover:border-stone-400 dark:border-stone-800 dark:hover:border-stone-600'
             }`}
           >
-            <span className="block font-medium">{r === 'student' ? 'I want to learn' : 'I want to teach'}</span>
+            <span className="block font-bold">{r === 'student' ? 'I want to learn' : 'I want to teach'}</span>
             <span className="text-xs text-stone-500">
               {r === 'student' ? 'Book lessons, pay securely' : 'Set your hours, get paid after each lesson'}
             </span>

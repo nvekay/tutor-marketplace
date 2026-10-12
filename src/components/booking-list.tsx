@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { BookingItem } from '@/lib/bookings/queries';
 import { formatUsd } from '@/lib/tutors';
+import { Avatar } from './avatar';
 import { BookingActions } from './booking-actions';
 
 /** Tutor's view of the money for a lesson */
@@ -54,7 +55,7 @@ export function BookingList({
   });
 
   return (
-    <ul className="divide-y divide-stone-200 rounded-2xl border border-stone-200/80 bg-white shadow-card dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
+    <ul className="divide-y divide-stone-200 rounded-lg border border-stone-200/80 bg-white dark:divide-stone-800 dark:border-stone-800 dark:bg-stone-900">
       {items.map((b) => {
         const status = STATUS[b.status];
         const start = new Date(b.startsAt);
@@ -66,6 +67,7 @@ export function BookingList({
                 {time.format(start)}–{time.format(new Date(b.endsAt))}
               </p>
             </div>
+            <Avatar name={b.counterpartName} src={b.counterpartAvatarUrl} size="sm" />
             <div className="min-w-0 flex-1">
               {perspective === 'student' ? (
                 <Link href={`/tutors/${b.counterpartId}`} className="font-medium hover:text-accent">
@@ -91,7 +93,7 @@ export function BookingList({
                 <p className="text-xs text-stone-500">{b.resolution ?? b.disputeReason}</p>
               )}
             </div>
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}>{status.label}</span>
+            <span className={`rounded px-2.5 py-0.5 text-xs font-medium ${status.className}`}>{status.label}</span>
             {perspective === 'student' && b.status === 'pending_payment' && (
               <Link
                 href={`/checkout/resume?booking=${b.id}`}

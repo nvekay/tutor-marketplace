@@ -7,8 +7,8 @@ import { formatUsd } from '@/lib/tutors';
 export const metadata: Metadata = { title: 'Tutors · Admin · Tutor Market' };
 
 const yes =
-  'rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300';
-const no = 'rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-500 dark:bg-stone-800 dark:text-stone-400';
+  'rounded bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300';
+const no = 'rounded bg-stone-100 px-2 py-0.5 text-xs text-stone-500 dark:bg-stone-800 dark:text-stone-400';
 
 export default async function AdminTutorsPage() {
   const tutors = await listTutorAccounts();
@@ -18,7 +18,7 @@ export default async function AdminTutorsPage() {
       <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
         A tutor is listed once Stripe enables transfers to their account and the profile is filled in.
       </p>
-      <div className="mt-4 overflow-x-auto rounded-2xl border border-stone-200/80 bg-white shadow-card dark:border-stone-800 dark:bg-stone-900">
+      <div className="mt-4 overflow-x-auto rounded-lg border border-stone-200/80 bg-white dark:border-stone-800 dark:bg-stone-900">
         <table className="w-full min-w-[48rem] text-left text-sm">
           <thead className="bg-stone-50 text-xs text-stone-500 dark:bg-stone-900">
             <tr>

@@ -62,7 +62,7 @@ function atLocalMinute(date: string, minute: number, timezone: string): Date | n
 }
 
 /** ISO weekday (1 = Monday) of a yyyy-MM-dd date */
-function isoWeekday(date: string): number {
+export function isoWeekday(date: string): number {
   const [y, m, d] = date.split('-').map(Number);
   return ((new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7) + 1;
 }

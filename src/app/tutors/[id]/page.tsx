@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, GraduationCap, ShieldCheck, Star } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -50,11 +50,13 @@ export default async function TutorPage({ params, searchParams }: Props) {
   const price = lessonPriceCents(tutor.hourlyRateCents, tutor.lessonMinutes);
   const rangeLabel = `${shortDate(dates[0])} – ${shortDate(dates[6])}`;
 
+  const average = tutor.ratingAvg;
+
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
       <Link
         href="/tutors"
-        className="inline-flex items-center gap-1 text-sm text-stone-500 transition-colors hover:text-stone-800 dark:hover:text-stone-200"
+        className="inline-flex items-center gap-1 text-sm font-medium text-stone-600 hover:text-stone-900 hover:underline dark:text-stone-400 dark:hover:text-stone-100"
       >
         <ChevronLeft className="size-4" aria-hidden /> All tutors
       </Link>
@@ -64,52 +66,43 @@ export default async function TutorPage({ params, searchParams }: Props) {
         </p>
       )}
 
-      <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_22rem]">
-        <section aria-labelledby="tutor-name">
-          <div className="flex items-start gap-5">
-            <Avatar name={tutor.fullName} size="lg" />
+      <div className="mt-6 grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_320px]">
+        <div className="min-w-0">
+          <section aria-labelledby="tutor-name" className="flex items-start gap-5">
+            <Avatar name={tutor.fullName} src={tutor.avatarUrl} size="lg" />
             <div className="min-w-0">
-              <h1 id="tutor-name" className="text-4xl leading-tight font-semibold">
+              <h1 id="tutor-name" className="text-4xl leading-tight">
                 {tutor.fullName}
               </h1>
-              <p className="mt-1 font-display text-lg text-stone-700 italic dark:text-stone-300">{tutor.headline}</p>
-              <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-stone-500">
-                {tutor.ratingAvg ? (
-                  <span className="inline-flex items-center gap-1">
-                    <Star className="size-4 fill-amber-500 text-amber-500" aria-hidden />
-                    {tutor.ratingAvg.toFixed(1)} · {tutor.ratingCount} reviews
-                  </span>
-                ) : (
-                  <span>New tutor</span>
-                )}
-                <span>
-                  {formatUsd(tutor.hourlyRateCents)}/hour · {tutor.lessonMinutes}-minute lessons
-                </span>
+              <p className="mt-1 flex items-center gap-1.5 text-stone-600 dark:text-stone-400">
+                <GraduationCap className="size-4 shrink-0" aria-hidden />
+                {tutor.subjects.join(', ')} tutor
               </p>
+              <p className="mt-3 text-lg font-semibold">{tutor.headline}</p>
             </div>
-          </div>
-          <ul className="mt-4 flex flex-wrap gap-1.5">
-            {tutor.subjects.map((s) => (
-              <li
-                key={s}
-                className="rounded-full border border-stone-300 px-3 py-0.5 text-sm text-stone-700 dark:border-stone-700 dark:text-stone-300"
-              >
-                {s}
-              </li>
-            ))}
-          </ul>
+          </section>
+
           {tutor.bio && (
-            <p className="mt-5 max-w-prose whitespace-pre-line text-stone-700 dark:text-stone-300">{tutor.bio}</p>
+            <section aria-labelledby="about" className="mt-10">
+              <h2 id="about" className="text-2xl">
+                About me
+              </h2>
+              <p className="mt-3 max-w-prose text-[15px] leading-relaxed whitespace-pre-line text-stone-700 dark:text-stone-300">
+                {tutor.bio}
+              </p>
+            </section>
           )}
 
-          <div className="mt-8">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-2xl font-semibold">Pick a time</h2>
+          <section id="schedule" aria-labelledby="schedule-title" className="mt-10 scroll-mt-24">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 id="schedule-title" className="text-2xl">
+                Schedule
+              </h2>
               <div className="flex items-center gap-1">
                 <WeekLink id={tutor.id} week={weekIndex - 1} disabled={weekIndex === 0} label="Previous week">
                   <ChevronLeft className="size-4" aria-hidden />
                 </WeekLink>
-                <span className="min-w-36 text-center text-sm tabular-nums">{rangeLabel}</span>
+                <span className="min-w-36 text-center text-sm font-semibold tabular-nums">{rangeLabel}</span>
                 <WeekLink id={tutor.id} week={weekIndex + 1} disabled={weekIndex === MAX_WEEK} label="Next week">
                   <ChevronRight className="size-4" aria-hidden />
                 </WeekLink>
@@ -126,40 +119,77 @@ export default async function TutorPage({ params, searchParams }: Props) {
               lessonMinutes={tutor.lessonMinutes}
               viewerRole={viewer?.id === tutor.id ? 'self' : (viewer?.role ?? null)}
             />
-          </div>
-        </section>
+          </section>
 
-        <aside aria-labelledby="reviews-title">
-          <h2 id="reviews-title" className="text-2xl font-semibold">
-            Reviews
-          </h2>
-          {tutor.reviews.length === 0 ? (
-            <p className="mt-2 text-sm text-stone-500">No reviews yet.</p>
-          ) : (
-            <ul className="mt-3 flex flex-col gap-3">
-              {tutor.reviews.map((r, i) => (
-                <li
-                  key={i}
-                  className="rounded-2xl border border-stone-200/80 bg-white p-4 text-sm shadow-card dark:border-stone-800 dark:bg-stone-900"
-                >
-                  <p className="flex items-center justify-between gap-2">
-                    <span className="font-medium">{r.author}</span>
-                    <span className="flex" aria-label={`${r.rating} out of 5`}>
+          <section aria-labelledby="reviews-title" className="mt-12">
+            <h2 id="reviews-title" className="text-2xl">
+              What my students say
+            </h2>
+            {average ? (
+              <p className="mt-3 flex items-end gap-2">
+                <span className="text-5xl leading-none font-bold tracking-tight">{average.toFixed(1)}</span>
+                <Star className="mb-1 size-7 fill-current" aria-hidden />
+                <span className="mb-1 text-sm text-stone-500">based on {tutor.ratingCount} reviews</span>
+              </p>
+            ) : (
+              <p className="mt-2 text-sm text-stone-500">No reviews yet.</p>
+            )}
+            {tutor.reviews.length > 0 && (
+              <ul className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                {tutor.reviews.map((r, i) => (
+                  <li key={i}>
+                    <div className="flex items-center gap-3">
+                      <Avatar name={r.author} size="sm" />
+                      <div>
+                        <p className="font-semibold">{r.author}</p>
+                        <p className="text-xs text-stone-500">{longDate(r.createdAt)}</p>
+                      </div>
+                    </div>
+                    <p className="mt-2 flex" aria-label={`${r.rating} out of 5`}>
                       {Array.from({ length: 5 }, (_, k) => (
                         <Star
                           key={k}
-                          className={`size-3.5 ${k < r.rating ? 'fill-amber-400 text-amber-400' : 'text-stone-300 dark:text-stone-600'}`}
+                          className={`size-4 ${k < r.rating ? 'fill-current' : 'text-stone-300 dark:text-stone-600'}`}
                           aria-hidden
                         />
                       ))}
-                    </span>
-                  </p>
-                  {r.comment && <p className="mt-1 text-stone-700 dark:text-stone-300">{r.comment}</p>}
-                  <p className="mt-1 text-xs text-stone-500">{shortDate(r.createdAt.slice(0, 10))}</p>
-                </li>
-              ))}
-            </ul>
-          )}
+                    </p>
+                    {r.comment && <p className="mt-1.5 text-[15px] text-stone-700 dark:text-stone-300">{r.comment}</p>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+
+        <aside className="top-20 rounded-lg border-2 border-stone-200 bg-white p-5 lg:sticky dark:border-stone-800 dark:bg-stone-900">
+          <div className="flex items-end justify-between gap-4">
+            <p>
+              <span className="text-3xl font-bold">{formatUsd(price)}</span>
+              <span className="block text-sm text-stone-500">{tutor.lessonMinutes}-min lesson</span>
+            </p>
+            {average && (
+              <p className="text-right">
+                <span className="inline-flex items-center gap-1 text-xl font-bold">
+                  {average.toFixed(1)} <Star className="size-4 fill-current" aria-hidden />
+                </span>
+                <span className="block text-sm text-stone-500">{tutor.ratingCount} reviews</span>
+              </p>
+            )}
+          </div>
+          <a
+            href="#schedule"
+            className="mt-5 block rounded-lg bg-stone-900 px-4 py-3 text-center font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-white dark:text-stone-900 dark:hover:bg-stone-200"
+          >
+            Book lesson
+          </a>
+          <div className="mt-5 flex gap-3 border-t border-stone-200 pt-5 text-sm dark:border-stone-800">
+            <ShieldCheck className="mt-0.5 size-5 shrink-0 text-accent dark:text-accent-ink" aria-hidden />
+            <p className="text-stone-600 dark:text-stone-400">
+              <span className="font-semibold text-stone-900 dark:text-stone-100">Paid after the lesson.</span> You pay
+              when you book; we hold the money until the lesson has happened. Cancel 24 hours ahead for a full refund.
+            </p>
+          </div>
         </aside>
       </div>
     </main>
@@ -180,7 +210,7 @@ function WeekLink({
   children: React.ReactNode;
 }) {
   const className =
-    'grid size-8 place-items-center rounded-md border border-stone-200 transition-colors dark:border-stone-800';
+    'grid size-9 place-items-center rounded-lg border-2 border-stone-200 transition-colors dark:border-stone-700';
   if (disabled)
     return (
       <span className={`${className} opacity-40`} aria-disabled="true" aria-label={label}>
@@ -192,7 +222,7 @@ function WeekLink({
       href={week === 0 ? `/tutors/${id}` : `/tutors/${id}?week=${week}`}
       scroll={false}
       aria-label={label}
-      className={`${className} hover:border-stone-300 hover:bg-stone-50 dark:hover:bg-stone-900`}
+      className={`${className} hover:border-stone-900 dark:hover:border-stone-200`}
     >
       {children}
     </Link>
@@ -202,3 +232,7 @@ function WeekLink({
 /** "2027-01-04" → "Jan 4" */
 const shortDate = (date: string) =>
   new Date(`${date}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+
+/** "2026-10-03T…" → "October 3, 2026" */
+const longDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });

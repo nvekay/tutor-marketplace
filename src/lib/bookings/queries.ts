@@ -19,6 +19,7 @@ export interface BookingItem {
   /** The other side: the tutor for a student, the student for a tutor */
   counterpartId: string;
   counterpartName: string;
+  counterpartAvatarUrl: string | null;
   /** Refund the student would get if the viewer cancelled now; null when it can't be cancelled */
   cancelRefundCents: number | null;
   lateCancellation: boolean;
@@ -38,7 +39,7 @@ export async function listMyBookings(
   const { data, error } = await supabase
     .from('bookings')
     .select(
-      'id, starts_at, ends_at, status, payout_status, payout_cents, price_cents, platform_fee_cents, refunded_cents, dispute_reason, resolution, student_id, tutor_id, student:profiles!bookings_student_id_fkey(full_name), tutor:tutors(profiles(full_name)), reviews(rating)',
+      'id, starts_at, ends_at, status, payout_status, payout_cents, price_cents, platform_fee_cents, refunded_cents, dispute_reason, resolution, student_id, tutor_id, student:profiles!bookings_student_id_fkey(full_name, avatar_url), tutor:tutors(profiles(full_name, avatar_url)), reviews(rating)',
     )
     .eq(column, viewer.id)
     .neq('status', 'expired')
@@ -71,6 +72,7 @@ export async function listMyBookings(
       counterpartId: asTutor ? b.student_id : b.tutor_id,
       counterpartName:
         (asTutor ? b.student?.full_name : b.tutor?.profiles?.full_name) ?? (asTutor ? 'Student' : 'Tutor'),
+      counterpartAvatarUrl: (asTutor ? b.student?.avatar_url : b.tutor?.profiles?.avatar_url) ?? null,
       cancelRefundCents: quote?.allowed ? quote.refundCents : null,
       lateCancellation: quote?.allowed ? quote.late : false,
       canReport:

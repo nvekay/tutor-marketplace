@@ -7,9 +7,10 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'icon';
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-accent text-white shadow-sm hover:bg-accent-strong active:bg-accent-strong/90',
+  primary:
+    'bg-stone-900 text-white hover:bg-stone-700 active:bg-stone-800 dark:bg-white dark:text-stone-900 dark:hover:bg-stone-200',
   secondary:
-    'border border-stone-300 bg-stone-50 text-stone-800 hover:border-stone-400 hover:bg-white active:bg-stone-100 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100 dark:hover:border-stone-600 dark:hover:bg-stone-800',
+    'border-2 border-stone-900 bg-white text-stone-900 hover:bg-stone-100 active:bg-stone-200 dark:border-stone-200 dark:bg-transparent dark:text-stone-100 dark:hover:bg-stone-800',
   ghost:
     'text-stone-600 hover:bg-stone-100 hover:text-stone-900 active:bg-stone-200 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100',
   danger:
@@ -17,9 +18,9 @@ const VARIANTS: Record<Variant, string> = {
 };
 
 const SIZES: Record<Size, string> = {
-  sm: 'h-8 gap-1.5 rounded-full px-3 text-xs',
-  md: 'h-11 gap-2 rounded-full px-5 text-sm',
-  icon: 'size-8 rounded-full',
+  sm: 'h-8 gap-1.5 rounded-md px-3 text-xs font-semibold',
+  md: 'h-11 gap-2 rounded-lg px-5 text-[15px] font-semibold',
+  icon: 'size-8 rounded-md',
 };
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

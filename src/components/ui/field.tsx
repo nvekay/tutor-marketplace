@@ -1,5 +1,5 @@
 export const inputClass =
-  'w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm outline-none transition hover:border-stone-400 focus:border-accent focus:ring-2 focus:ring-accent/20 disabled:cursor-not-allowed disabled:opacity-60 dark:border-stone-700 dark:bg-stone-900';
+  'w-full rounded-lg border border-stone-300 bg-white px-3.5 py-2.5 text-[15px] outline-none transition hover:border-stone-500 focus:border-stone-900 focus:ring-0 dark:focus:border-stone-300 disabled:cursor-not-allowed disabled:opacity-60 dark:border-stone-700 dark:bg-stone-900';
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (

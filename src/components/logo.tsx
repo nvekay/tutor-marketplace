@@ -1,21 +1,20 @@
-/** Brand mark: a half-lit circle (a lesson "in progress") with an amber spark */
-export function LogoMark({ className = 'size-8' }: { className?: string }) {
+/** Brand mark: a filled square with a cut corner, like a page being turned */
+export function LogoMark({ className = 'size-7' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 32" className={className} aria-hidden>
-      <circle cx="16" cy="16" r="13" className="fill-paper stroke-accent" strokeWidth="2.5" />
-      <path d="M16 3a13 13 0 0 0 0 26Z" className="fill-accent" />
-      <circle cx="23.5" cy="9.5" r="3" className="fill-amber-500" />
+    <svg viewBox="0 0 28 28" className={className} aria-hidden>
+      <path d="M4 4h20v13l-7 7H4z" className="fill-stone-900 dark:fill-white" />
+      <path d="M17 24v-7h7z" className="fill-accent" />
     </svg>
   );
 }
 
-/** Mark + serif wordmark; the wordmark hides on the narrowest phones */
+/** Mark + wordmark; the wordmark hides on the narrowest phones */
 export function Logo() {
   return (
-    <span className="flex items-center gap-2.5">
+    <span className="flex items-center gap-2">
       <LogoMark />
-      <span className="hidden font-display text-xl leading-none font-semibold tracking-tight min-[400px]:inline">
-        Tutor <em className="font-medium text-accent dark:text-accent-ink">Market</em>
+      <span className="hidden text-[22px] leading-none font-extrabold tracking-[-0.04em] min-[400px]:inline">
+        tutormarket
       </span>
     </span>
   );

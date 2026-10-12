@@ -360,6 +360,13 @@ async function main() {
   const emails = [DEMO[1].email, ...TUTORS.map((_, i) => `tutor${i + 1}@${SEED_DOMAIN}`)];
 
   for (const [i, t] of tutorRows.entries()) {
+    // Portraits live in public/tutors/<first-last>.jpg; tutors without one keep their initials
+    const photo = `/tutors/${t.name.toLowerCase().replace(/\s+/g, '-')}.jpg`;
+    await db
+      .from('profiles')
+      .update({ avatar_url: existsSync(`public${photo}`) ? photo : null })
+      .eq('id', t.id);
+
     const accountId = stripe ? await seedStripeAccount(emails[i], t.name) : null;
     const { error } = await db
       .from('tutors')

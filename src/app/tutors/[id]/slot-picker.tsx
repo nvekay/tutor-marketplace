@@ -51,9 +51,9 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
   return (
     <div className="mt-3">
       {empty ? (
-        <div className="rounded-3xl border border-dashed border-stone-300 px-4 py-12 text-center dark:border-stone-700">
+        <div className="rounded-lg border-2 border-dashed border-stone-200 px-4 py-12 text-center dark:border-stone-700">
           <CalendarX className="mx-auto size-6 text-stone-400" aria-hidden />
-          <p className="mt-2 font-medium">No free times this week</p>
+          <p className="mt-2 font-semibold">No free times this week</p>
           <p className="text-sm text-stone-500">Try the next week.</p>
         </div>
       ) : (
@@ -63,7 +63,7 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
             return (
               <div key={day.date} className="flex gap-3 md:flex-col md:gap-1.5">
                 <p className="w-16 shrink-0 pt-1.5 text-sm md:w-auto md:pt-0 md:text-center">
-                  <span className="font-medium">{weekday}</span> <span className="text-stone-500 md:block">{date}</span>
+                  <span className="font-bold">{weekday}</span> <span className="text-stone-500 md:block">{date}</span>
                 </p>
                 <div className="flex flex-1 flex-wrap gap-1.5 md:flex-col">
                   {day.slots.length === 0 && <span className="pt-1.5 text-sm text-stone-400 md:text-center">—</span>}
@@ -75,10 +75,10 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
                         type="button"
                         aria-pressed={active}
                         onClick={() => setSelected(active ? null : slot.start)}
-                        className={`rounded-full border px-3 py-1.5 text-sm tabular-nums transition-colors ${
+                        className={`rounded-md border-2 px-3 py-1.5 text-sm font-semibold tabular-nums transition-colors ${
                           active
-                            ? 'border-accent bg-accent font-medium text-white'
-                            : 'border-stone-300 bg-white hover:border-accent hover:bg-accent-soft dark:border-stone-700 dark:bg-stone-900 dark:hover:bg-stone-800'
+                            ? 'border-stone-900 bg-stone-900 text-white dark:border-white dark:bg-white dark:text-stone-900'
+                            : 'border-stone-200 bg-white hover:border-stone-900 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-stone-200'
                         }`}
                       >
                         {slot.label}
@@ -93,9 +93,9 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
       )}
 
       {selected && (
-        <div className="animate-fade-in sticky bottom-4 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-stone-200 bg-white p-5 shadow-card-hover dark:border-stone-700 dark:bg-stone-900">
+        <div className="animate-fade-in sticky bottom-4 mt-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border-2 border-stone-900 bg-white p-5 shadow-lg dark:border-stone-700 dark:bg-stone-900">
           <div className="text-sm">
-            <p className="font-display text-lg font-semibold">
+            <p className="text-lg font-bold">
               {lessonMinutes}-minute lesson with {tutorName}
             </p>
             <p className="text-stone-600 dark:text-stone-400">
@@ -129,7 +129,7 @@ function BookAction({
     return (
       <Link
         href={`/login?next=${encodeURIComponent(pathname)}`}
-        className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-strong"
+        className="rounded-lg bg-stone-900 px-5 py-2.5 text-[15px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-white dark:text-stone-900"
       >
         Sign in to book
       </Link>

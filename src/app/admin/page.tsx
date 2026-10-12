@@ -52,10 +52,10 @@ export default async function AdminPage() {
         {cards.map((c) => (
           <div
             key={c.label}
-            className={`rounded-2xl border p-4 shadow-card ${c.strong ? 'border-transparent bg-accent text-white' : 'border-stone-200/80 bg-white dark:border-stone-800 dark:bg-stone-900'}`}
+            className={`rounded-lg border p-4 ${c.strong ? 'border-transparent bg-accent text-white' : 'border-stone-200/80 bg-white dark:border-stone-800 dark:bg-stone-900'}`}
           >
             <dt className={`text-xs ${c.strong ? 'text-white/75' : 'text-stone-500'}`}>{c.label}</dt>
-            <dd className="mt-1 font-display text-2xl font-semibold tabular-nums">{c.value}</dd>
+            <dd className="mt-1 text-2xl font-semibold tabular-nums">{c.value}</dd>
             {c.hint && <dd className={`text-xs ${c.strong ? 'text-white/75' : 'text-stone-500'}`}>{c.hint}</dd>}
           </div>
         ))}

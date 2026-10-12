@@ -1,4 +1,4 @@
-import { LogOut } from 'lucide-react';
+import { LogIn, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { signOut } from '@/app/(auth)/actions';
 import { getViewer, homeFor, type Role, type Viewer } from '@/lib/auth';
@@ -45,19 +45,25 @@ export async function SiteHeader() {
   const notifications = viewer ? await loadNotifications(viewer) : null;
 
   return (
-    <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-paper/85 backdrop-blur-md dark:border-stone-800">
+    <header className="sticky top-0 z-20 border-b border-stone-200 bg-paper dark:border-stone-800">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
-        <Link href="/" aria-label="Tutor Market home" className="flex items-center gap-2.5 whitespace-nowrap">
-          <Logo />
-          <span className="hidden rounded-full border border-amber-300/70 bg-amber-50 px-2 py-0.5 text-[11px] font-medium tracking-wide text-amber-800 uppercase sm:inline dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-300">
-            demo
+        <div className="flex items-center gap-6">
+          <Link href="/" aria-label="Tutor Market home" className="flex items-center gap-2 whitespace-nowrap">
+            <Logo />
+            <span className="hidden rounded bg-stone-100 px-1.5 py-0.5 text-[11px] font-semibold text-stone-500 sm:inline dark:bg-stone-800 dark:text-stone-400">
+              DEMO
+            </span>
+          </Link>
+          <nav className="hidden items-center gap-1 text-[15px] font-medium md:flex" aria-label="Main">
+            <NavLink href="/tutors">Find tutors</NavLink>
+            {!viewer && <NavLink href="/signup?role=tutor">Become a tutor</NavLink>}
+            <NavLink href="/#payments">How payments work</NavLink>
+          </nav>
+        </div>
+        <nav className="flex items-center gap-1 text-[15px] font-medium" aria-label="Account">
+          <span className="md:hidden">
+            <NavLink href="/tutors">Tutors</NavLink>
           </span>
-        </Link>
-        <nav className="flex items-center gap-1 text-sm">
-          <NavLink href="/tutors">
-            <span className="sm:hidden">Tutors</span>
-            <span className="hidden sm:inline">Find a tutor</span>
-          </NavLink>
           {viewer ? (
             <>
               <NavLink href={homeFor(viewer.role)}>
@@ -69,7 +75,7 @@ export async function SiteHeader() {
                 <button
                   type="submit"
                   title={`Signed in as ${viewer.fullName || viewer.email}`}
-                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-stone-600 transition-colors hover:bg-stone-200/60 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+                  className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
                 >
                   <LogOut className="size-4" aria-hidden />
                   <span className="hidden sm:inline">Sign out</span>
@@ -77,15 +83,12 @@ export async function SiteHeader() {
               </form>
             </>
           ) : (
-            <>
-              <NavLink href="/login">Sign in</NavLink>
-              <Link
-                href="/signup"
-                className="rounded-full bg-accent px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-accent-strong"
-              >
-                Sign up
-              </Link>
-            </>
+            <Link
+              href="/login"
+              className="ml-1 inline-flex items-center gap-1.5 rounded-lg border-2 border-stone-900 px-3.5 py-1.5 font-semibold transition-colors hover:bg-stone-100 dark:border-stone-200 dark:hover:bg-stone-800"
+            >
+              <LogIn className="size-4" aria-hidden /> Log in
+            </Link>
           )}
         </nav>
       </div>

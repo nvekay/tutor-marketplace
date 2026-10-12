@@ -35,12 +35,12 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
         {tutor.listed ? (
           <Link
             href={`/tutors/${tutor.id}`}
-            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300"
+            className="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300"
           >
             <Eye className="size-4" aria-hidden /> Listed in search
           </Link>
         ) : (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-3 py-1 text-sm text-stone-600 dark:bg-stone-800 dark:text-stone-300">
+          <span className="inline-flex items-center gap-1.5 rounded-md bg-stone-100 px-3 py-1 text-sm text-stone-600 dark:bg-stone-800 dark:text-stone-300">
             <EyeOff className="size-4" aria-hidden /> Not listed yet
           </span>
         )}
@@ -63,7 +63,7 @@ export default async function TutorDashboardPage({ searchParams }: { searchParam
 
       <section
         aria-labelledby="steps-title"
-        className="rounded-2xl border border-stone-200/80 bg-white shadow-card p-5 dark:border-stone-800 dark:bg-stone-900"
+        className="rounded-lg border border-stone-200/80 bg-white p-5 dark:border-stone-800 dark:bg-stone-900"
       >
         <h2 id="steps-title" className="font-medium">
           {steps.every((s) => s.done) ? 'You’re all set' : 'Get ready to teach'}
@@ -122,7 +122,7 @@ function PayoutsCard({ tutor }: { tutor: MyTutorProfile }) {
     <section
       id="payouts"
       aria-labelledby="payouts-title"
-      className="scroll-mt-20 rounded-2xl border border-stone-200/80 bg-white shadow-card p-5 dark:border-stone-800 dark:bg-stone-900"
+      className="scroll-mt-20 rounded-lg border border-stone-200/80 bg-white p-5 dark:border-stone-800 dark:bg-stone-900"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 id="payouts-title" className="font-medium">
@@ -155,7 +155,7 @@ function PayoutsCard({ tutor }: { tutor: MyTutorProfile }) {
                 {tutor.stripeRequirements.map((r) => (
                   <li
                     key={r}
-                    className="rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-900 dark:bg-amber-950/40 dark:text-amber-200"
+                    className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-900 dark:bg-amber-950/40 dark:text-amber-200"
                   >
                     {requirementLabel(r)}
                   </li>
@@ -191,12 +191,12 @@ function PayoutsCard({ tutor }: { tutor: MyTutorProfile }) {
 function PayoutBadge({ tutor }: { tutor: MyTutorProfile }) {
   if (tutor.transfersEnabled)
     return (
-      <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+      <span className="rounded bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
         Active{tutor.payoutsEnabled ? '' : ' · bank payouts not set up'}
       </span>
     );
   return (
-    <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs text-stone-600 dark:bg-stone-800 dark:text-stone-300">
+    <span className="rounded bg-stone-100 px-2.5 py-0.5 text-xs text-stone-600 dark:bg-stone-800 dark:text-stone-300">
       {tutor.stripeAccountId ? 'Setup in progress' : 'Not set up'}
     </span>
   );
@@ -227,7 +227,7 @@ function Earnings({ items }: { items: Awaited<ReturnType<typeof listMyBookings>>
       {cards.map((c) => (
         <div
           key={c.label}
-          className="rounded-2xl border border-stone-200/80 bg-white shadow-card p-4 dark:border-stone-800 dark:bg-stone-900"
+          className="rounded-lg border border-stone-200/80 bg-white p-4 dark:border-stone-800 dark:bg-stone-900"
         >
           <p className="text-xs text-stone-500">{c.label}</p>
           <p className="mt-1 text-xl font-semibold tabular-nums">{formatUsd(c.value)}</p>

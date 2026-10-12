@@ -39,7 +39,7 @@ export function DateExceptions({ exceptions, timezone }: { exceptions: DateExcep
     <div className="mt-4 grid gap-6 md:grid-cols-2">
       <form
         action={action}
-        className="flex flex-col gap-3 rounded-2xl border border-stone-200/80 bg-white shadow-card p-4 dark:border-stone-800 dark:bg-stone-900"
+        className="flex flex-col gap-3 rounded-lg border border-stone-200/80 bg-white p-4 dark:border-stone-800 dark:bg-stone-900"
       >
         <Field label={`Date (${timezone})`}>
           <input name="date" type="date" required className={inputClass} />

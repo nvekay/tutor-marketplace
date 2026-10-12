@@ -25,7 +25,7 @@ const PAYOUT: Record<string, [string, keyof typeof tone]> = {
 };
 
 const Badge = ({ label, color }: { label: string; color: keyof typeof tone }) => (
-  <span className={`rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${tone[color]}`}>{label}</span>
+  <span className={`rounded px-2 py-0.5 text-xs font-medium whitespace-nowrap ${tone[color]}`}>{label}</span>
 );
 
 export function StatusBadge({ status, chargeback = false }: { status: string; chargeback?: boolean }) {

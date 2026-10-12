@@ -28,7 +28,7 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
             key={f}
             href={f === 'all' ? '/admin/bookings' : `/admin/bookings?filter=${f}`}
             aria-current={f === filter ? 'page' : undefined}
-            className={`rounded-full px-3 py-1 text-sm transition-colors ${
+            className={`rounded-md px-3 py-1 text-sm transition-colors ${
               f === filter
                 ? 'bg-accent text-white'
                 : 'bg-stone-100 text-stone-700 hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700'

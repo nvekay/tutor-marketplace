@@ -43,7 +43,7 @@ export function AdminBookingActions({
   const refundValid = Number.isFinite(refundCents) && refundCents >= 0 && refundCents <= priceCents;
 
   return (
-    <section className="flex flex-col gap-4 rounded-2xl border border-stone-200/80 bg-white shadow-card p-4 dark:border-stone-800 dark:bg-stone-900">
+    <section className="flex flex-col gap-4 rounded-lg border border-stone-200/80 bg-white p-4 dark:border-stone-800 dark:bg-stone-900">
       <h2 className="font-medium">Actions</h2>
 
       {canResolve && (

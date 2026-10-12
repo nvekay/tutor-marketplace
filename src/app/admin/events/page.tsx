@@ -26,7 +26,7 @@ export default async function AdminEventsPage() {
           No webhook events received yet.
         </p>
       ) : (
-        <div className="mt-4 overflow-x-auto rounded-2xl border border-stone-200/80 bg-white shadow-card dark:border-stone-800 dark:bg-stone-900">
+        <div className="mt-4 overflow-x-auto rounded-lg border border-stone-200/80 bg-white dark:border-stone-800 dark:bg-stone-900">
           <table className="w-full min-w-[40rem] text-left text-sm">
             <thead className="bg-stone-50 text-xs text-stone-500 dark:bg-stone-900">
               <tr>

@@ -92,7 +92,7 @@ export default async function AdminBookingPage({ params }: { params: Promise<{ i
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_20rem]">
         <div className="flex flex-col gap-6">
-          <section className="rounded-2xl border border-stone-200/80 bg-white shadow-card p-4 dark:border-stone-800 dark:bg-stone-900">
+          <section className="rounded-lg border border-stone-200/80 bg-white p-4 dark:border-stone-800 dark:bg-stone-900">
             <h2 className="font-medium">Money</h2>
             <dl className="mt-3 grid grid-cols-2 gap-y-1.5 text-sm sm:grid-cols-4">
               <dt className="text-stone-500">Price</dt>
@@ -160,7 +160,7 @@ export default async function AdminBookingPage({ params }: { params: Promise<{ i
             fastForwardLabel={b.status === 'confirmed' ? 'Finish the lesson now' : 'Skip the complaint window and pay'}
           />
           {stripeIds.length > 0 && (
-            <section className="rounded-2xl border border-stone-200/80 bg-white shadow-card p-4 dark:border-stone-800 dark:bg-stone-900">
+            <section className="rounded-lg border border-stone-200/80 bg-white p-4 dark:border-stone-800 dark:bg-stone-900">
               <h2 className="font-medium">In Stripe</h2>
               <ul className="mt-2 flex flex-col gap-1.5 text-sm">
                 {stripeIds.map(([label, id]) => (

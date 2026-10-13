@@ -129,7 +129,9 @@ export default async function TutorPage({ params, searchParams }: Props) {
               <p className="mt-3 flex items-end gap-2">
                 <span className="text-5xl leading-none font-bold tracking-tight">{average.toFixed(1)}</span>
                 <Star className="mb-1 size-7 fill-current" aria-hidden />
-                <span className="mb-1 text-sm text-stone-500">based on {tutor.ratingCount} reviews</span>
+                <span className="mb-1 text-sm text-stone-500">
+                  based on {tutor.ratingCount} {tutor.ratingCount === 1 ? 'review' : 'reviews'}
+                </span>
               </p>
             ) : (
               <p className="mt-2 text-sm text-stone-500">No reviews yet.</p>
@@ -173,7 +175,9 @@ export default async function TutorPage({ params, searchParams }: Props) {
                 <span className="inline-flex items-center gap-1 text-xl font-bold">
                   {average.toFixed(1)} <Star className="size-4 fill-current" aria-hidden />
                 </span>
-                <span className="block text-sm text-stone-500">{tutor.ratingCount} reviews</span>
+                <span className="block text-sm text-stone-500">
+                  {tutor.ratingCount} {tutor.ratingCount === 1 ? 'review' : 'reviews'}
+                </span>
               </p>
             )}
           </div>

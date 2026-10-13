@@ -49,7 +49,9 @@ export function TutorCard({ tutor: t, active = false }: { tutor: TutorListItem; 
                 <span className="inline-flex items-center gap-1 text-lg font-bold">
                   {t.ratingAvg.toFixed(1)} <Star className="size-4 fill-current" aria-hidden />
                 </span>
-                <span className="block text-sm text-stone-500">{t.ratingCount} reviews</span>
+                <span className="block text-sm text-stone-500">
+                  {t.ratingCount} {t.ratingCount === 1 ? 'review' : 'reviews'}
+                </span>
               </>
             ) : (
               <span className="text-sm font-semibold">New tutor</span>

@@ -5,8 +5,16 @@ takes place, then pays the tutor minus a platform fee. Cancellations, refunds an
 
 Next.js 16 · TypeScript · Supabase (Postgres, Auth, row level security) · Stripe Connect (test mode) · Tailwind CSS
 
+Live demo: https://tutor-marketplace-cyan.vercel.app
+
 Try it as a student, a tutor or an admin with one click on the sign-in page. Everything runs in Stripe test mode:
 pay with `4242 4242 4242 4242`, any future date and any CVC.
+
+![Tutor search with weekly availability](docs/screenshots/2-search.png)
+
+![Admin view of one lesson: paid, lesson took place, tutor paid](docs/screenshots/5-payment-timeline.png)
+
+More: [home](docs/screenshots/1-home.png) · [booking](docs/screenshots/3-booking.png) · [Stripe Checkout](docs/screenshots/4-stripe-checkout.png) · [payments overview](docs/screenshots/6-admin-overview.png) · [tutor dashboard](docs/screenshots/7-tutor-dashboard.png) · [phone](docs/screenshots/8-mobile.png)
 
 ## Run locally
 

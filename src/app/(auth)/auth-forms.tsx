@@ -41,13 +41,7 @@ export function SignInForm({ next }: { next?: string }) {
 
 const DEMO_ROLES = [
   { role: 'student', person: 'Alex Morgan', label: 'Student', hint: 'Find a tutor, book and pay for a lesson' },
-  {
-    role: 'tutor',
-    person: 'Maria Keller',
-    photo: '/tutors/maria-keller.jpg',
-    label: 'Tutor',
-    hint: 'Hours, booked lessons and earnings',
-  },
+  { role: 'tutor', person: 'Maria Keller', label: 'Tutor', hint: 'Hours, booked lessons and earnings' },
   { role: 'admin', person: 'Demo Admin', label: 'Admin', hint: 'Payments, payouts, complaints' },
 ] as const;
 
@@ -61,7 +55,7 @@ export function DemoSignIn({ next }: { next?: string }) {
     <div>
       <p className="mb-3 text-sm font-medium text-stone-600 dark:text-stone-400">Try the demo, no sign-up needed</p>
       <div className="grid gap-3 sm:grid-cols-3">
-        {DEMO_ROLES.map(({ role, person, label, hint, ...rest }) => (
+        {DEMO_ROLES.map(({ role, person, label, hint }) => (
           <button
             key={role}
             type="button"
@@ -77,7 +71,7 @@ export function DemoSignIn({ next }: { next?: string }) {
             className="group flex flex-col rounded-lg border-2 border-stone-200 bg-white p-5 text-left transition-colors hover:border-stone-900 disabled:pointer-events-none disabled:opacity-60 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-stone-200"
           >
             <span className="flex items-center justify-between">
-              <Avatar name={person} src={'photo' in rest ? rest.photo : null} size="sm" />
+              <Avatar name={person} size="sm" />
               <ArrowRight
                 className="size-4 text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-stone-900 dark:group-hover:text-white"
                 aria-hidden

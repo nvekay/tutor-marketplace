@@ -186,6 +186,12 @@ export async function createBooking(input: {
           metadata: { booking_id: booking.id },
         },
         metadata: { booking_id: booking.id },
+        // Demo visitors land here straight from the site, so tell them which card works in test mode
+        ...(env().STRIPE_SECRET_KEY?.startsWith('sk_test_') && {
+          custom_text: {
+            submit: { message: 'Test mode: pay with card 4242 4242 4242 4242, any future date and any CVC.' },
+          },
+        }),
         expires_at: Math.floor(holdUntil.getTime() / 1000),
         success_url: `${site}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${site}/checkout/cancel?booking=${booking.id}`,

@@ -101,6 +101,11 @@ export function SlotPicker({ tutorId, days, timezone, tutorName, priceLabel, les
             <p className="text-stone-600 dark:text-stone-400">
               {selectedLabel} · <span className="font-medium text-stone-900 dark:text-stone-100">{priceLabel}</span>
             </p>
+            <p className="mt-1 text-xs text-stone-500">
+              Test mode: pay with{' '}
+              <span className="font-mono text-stone-700 dark:text-stone-300">4242 4242 4242 4242</span>, any future date
+              and CVC
+            </p>
           </div>
           <BookAction role={viewerRole} tutorId={tutorId} startsAt={selected} onUnavailable={() => setSelected(null)} />
         </div>

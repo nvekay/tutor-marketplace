@@ -81,23 +81,26 @@ export default async function HomePage() {
             <Image
               src={faces[0].avatarUrl!}
               alt={faces[0].fullName}
-              width={200}
-              height={200}
-              priority
+              width={1024}
+              height={1024}
+              sizes="380px"
+              preload
               className="row-span-2 aspect-[4/5] h-full w-full rounded-lg object-cover"
             />
             <Image
               src={faces[1].avatarUrl!}
               alt={faces[1].fullName}
-              width={200}
-              height={200}
+              width={1024}
+              height={1024}
+              sizes="190px"
               className="aspect-square w-full rounded-lg object-cover"
             />
             <Image
               src={faces[2].avatarUrl!}
               alt={faces[2].fullName}
-              width={200}
-              height={200}
+              width={1024}
+              height={1024}
+              sizes="190px"
               className="aspect-square w-full rounded-lg object-cover"
             />
             <div className="absolute -bottom-4 left-3 rounded-lg border-2 border-stone-900 bg-white px-3.5 py-2.5 shadow-lg dark:border-stone-200 dark:bg-stone-900">
